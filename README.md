@@ -1,2 +1,2 @@
 # v3-table
-Table plugin for Vue 3
+A data table component for Vue 3.x.
