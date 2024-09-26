@@ -15,19 +15,9 @@ const props = defineProps({
     default: []
   },
 
-  selectable: {
-    type: Boolean,
-    default: false
-  },
-
   showColumnFilter: {
     type: Boolean,
     default: true
-  },
-
-  showIndexNumber: {
-    type: Boolean,
-    default: false
   },
 
   filterTypes: {
@@ -73,17 +63,63 @@ let cols = ref([]),
     sourceRows = ref(props.data),
     showAutoWidthCol = ref(false),
     rowActions = ref([]),
-    leftFixedColNum = ref(0);
+    leftFixedColNum = ref(0),
+    leftFixedColWidth = ref(0),
+    rightFixedColNum = ref(0),
+    rightFixedWidth = ref(0);
 
 watch(
     () => props.columns,
     (columns) => {
-      let tmpCols = [], tmpShowAutoWidthCol = false;
+
+      let tmpCols = [],
+          tmpShowAutoWidthCol = false,
+          tmpLeftFixedWidthArr = [],
+          tmpLeftFixedColWidth = 0,
+          tmpRightWidthArr = [],
+          tmpRightFixedColWidth = 0;
+
+      let hasLeftFixedCol = columns.filter((col) => col['fixed'] === 'left').length > 0;
       columns.forEach((col) => {
+        switch (col['type']) {
+          case 'checkbox':
+            col['width'] = col['width'] || 40;
+            col['fixed'] = hasLeftFixedCol ? 'left' : false;
+            break;
+          case 'index':
+            col['width'] = col['width'] || 40;
+            col['fixed'] = hasLeftFixedCol ? 'left' : false;
+            break;
+        }
+      });
+
+      for (let c = 0; c < columns.length; c++) {
+        if (columns[c]['fixed'] === 'left') {
+          tmpLeftFixedWidthArr[c] = tmpLeftFixedColWidth;
+          tmpLeftFixedColWidth += columns[c]['width'];
+        } else {
+          leftFixedColWidth = tmpLeftFixedColWidth;
+          break;
+        }
+      }
+
+      for (let c = columns.length - 1; c >= 0; c--) {
+        if (columns[c]['fixed'] === 'right') {
+          tmpRightWidthArr[c] = tmpRightFixedColWidth;
+          tmpRightFixedColWidth += columns[c]['width'];
+          rightFixedColNum = c;
+        } else {
+          rightFixedWidth = tmpRightFixedColWidth;
+          break;
+        }
+      }
+
+      columns.forEach((col, c) => {
         if (col['width']) {
           tmpShowAutoWidthCol = true;
         }
         tmpCols.push({
+          type: col['type'] || 'data',
           code: col['code'] || col['field'],
           field: col['field'] || false,
           hidden: col['hidden'] || false,
@@ -97,10 +133,19 @@ watch(
             'sort': col['sort'],
             'asc': col['sortDir'] === 'asc',
             'desc': col['sortDir'] === 'desc'
+          },
+          style: {
+            left: col['fixed'] ? (tmpLeftFixedWidthArr[c] + 'px') : 'unset',
+            right: col['fixed'] ? (tmpRightFixedColWidth[c] + 'px') : 'unset',
+            position: col['fixed'] ? 'sticky' : 'unset',
+            zIndex: col['fixed'] ? 2 : 1,
+            width: col['width'] ? (col['width'] + 'px') : 'auto'
           }
         });
       });
+
       cols = tmpCols;
+      showAutoWidthCol = tmpShowAutoWidthCol;
     },
     {immediate: true}
 );
@@ -116,14 +161,14 @@ function checkAll() {
       <table>
         <thead>
         <tr>
-          <th v-if="selectable" class="check">
-            <div><input type="checkbox" @click="checkAll"/></div>
-          </th>
-          <th v-if="showIndexNumber" class="index">
-            <div>#</div>
-          </th>
           <template v-for="(col, c) in cols">
-            <th v-if="!col.hidden" :class="col.cssClass">
+            <th v-if="col['type'] === 'checkbox'" class="checkbox" :style="col.style">
+              <div><input type="checkbox" @click="checkAll"/></div>
+            </th>
+            <th v-if="col['type'] === 'index'" class="index" :style="col.style">
+              <div>#</div>
+            </th>
+            <th v-if="col['type'] === 'data' && !col.hidden" :class="col.cssClass" :style="col.style">
               <div v-text="col.title"></div>
             </th>
           </template>
@@ -131,10 +176,10 @@ function checkAll() {
           <th v-if="rowActions.length > 0" class="actions"></th>
         </tr>
         <tr v-if="showColumnFilter">
-          <th v-if="selectable"></th>
-          <th v-if="showIndexNumber"></th>
           <template v-for="(col, c) in cols">
-            <th v-if="!col.hidden">
+            <th v-if="col['type'] === 'checkbox'" class="checkbox"></th>
+            <th v-if="col['type'] === 'index'" class="index"></th>
+            <th v-if="col['type'] === 'data' && !col.hidden">
               <component
                   v-if="col['filter']"
                   :is="col['filter']['type']"
@@ -157,8 +202,6 @@ function checkAll() {
                 :cols="cols"
                 :rowActions="rowActions[r]"
                 :leftFixedColNum="leftFixedColNum"
-                :selectable="selectable"
-                :showIndexNumber="showIndexNumber"
                 :showAutoWidthCol="showAutoWidthCol"
                 @click="(obj) => $emit('row-click', obj)"
                 @db-click="(obj) => $emit('row-db-click', obj)"></v3-table-tr>
@@ -166,7 +209,7 @@ function checkAll() {
         </template>
         <template v-else>
           <tr>
-            <td :colspan="cols.length + (selectable ? 1 : 0) + (showIndexNumber ? 1 : 0) + (showAutoWidthCol ? 1 : 0)"
+            <td :colspan="cols.length"
                 class="no-data">
               <div v-text="tipNoData"></div>
             </td>
@@ -175,6 +218,7 @@ function checkAll() {
         </tbody>
       </table>
     </div>
+    <div class="v3-table-footer"></div>
   </div>
 </template>
 
@@ -200,8 +244,6 @@ function checkAll() {
 
   --v3-table-cell-padding: .3125rem;
   --v3-table-cell-box-padding: 0 .3125rem;
-  --v3-table-cell-check-width: 2rem;
-  --v3-table-cell-index-width: 3rem;
   --v3-table-cell-no-data-bg: #fff;
   --v3-table-cell-no-data-padding: 1rem;
 }
@@ -240,16 +282,8 @@ function checkAll() {
   border-right-width: 1px;
 }
 
-.v3-table th.check {
-  width: var(--v3-table-cell-check-width);
-}
-
-.v3-table th.check > div {
+.v3-table th.checkbox > div {
   justify-content: center;
-}
-
-.v3-table th.index {
-  width: var(--v3-table-cell-index-width);
 }
 
 .v3-table th > div,
