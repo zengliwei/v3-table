@@ -368,6 +368,7 @@ const updatePage = function (p) {
 .v3-table {
   --v3-table-width: 100%;
   --v3-table-border-color: #DCDFE6;
+  --v3-table-line-height: 1.5rem;
 
   --v3-table-header-lv1-bg: linear-gradient(#f4f5f8, #f1f3f6);
   --v3-table-header-lv2-bg: linear-gradient(#f4f5f8, #f1f3f6);
@@ -395,6 +396,7 @@ const updatePage = function (p) {
 
   --v3-table-paginator-gap: .5rem;
   --v3-table-paginator-disabled-color: #ccc;
+  --v3-table-paginator-select-padding: calc((var(--v3-table-line-height) - var(--v3-table-footer-font-size) - 2px) / 2) .5rem;
 
   --v3-table-cell-padding: .3125rem;
   --v3-table-cell-box-padding: 0 .3125rem;
@@ -402,6 +404,7 @@ const updatePage = function (p) {
   --v3-table-cell-no-data-padding: 1rem;
 
   --v3-table-link-color: #007bff;
+  --v3-table-select-padding: calc((var(--v3-table-line-height) - var(--v3-table-body-font-size) - 2px) / 2) .5rem;
 }
 
 .v3-table {
@@ -413,6 +416,17 @@ const updatePage = function (p) {
 .v3-table a {
   color: var(--v3-table-link-color);
   text-decoration: none;
+}
+
+.v3-table select {
+  border: 1px solid var(--v3-table-border-color);
+  box-sizing: border-box;
+  color: inherit;
+  display: block;
+  font-size: inherit;
+  outline: none;
+  padding: var(--v3-table-select-padding);
+  width: 100%;
 }
 
 .v3-table table {
@@ -434,6 +448,7 @@ const updatePage = function (p) {
   border-bottom-width: 1px;
   border-right-width: 1px;
   box-sizing: border-box;
+  line-height: var(--v3-table-line-height);
   padding: var(--v3-table-cell-padding);
 }
 
@@ -559,6 +574,7 @@ const updatePage = function (p) {
   border-style: solid;
   border-width: 0 1px 1px 1px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   font-size: var(--v3-table-footer-font-size);
 }
@@ -569,11 +585,16 @@ const updatePage = function (p) {
 
 .v3-table .v3-table-footer .paginator {
   display: flex;
+  align-items: center;
   gap: var(--v3-table-paginator-gap);
 }
 
 .v3-table .v3-table-footer .paginator .disabled {
   color: var(--v3-table-paginator-disabled-color);
   cursor: not-allowed;
+}
+
+.v3-table .v3-table-footer .paginator select {
+  padding: var(--v3-table-paginator-select-padding);
 }
 </style>
