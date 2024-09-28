@@ -337,6 +337,11 @@ let data = [
       :filter-types="filterTypes"
       :data="data"
       :page-size="20"
+      :toolbar-actions="[
+        {label: 'Add', handle: (activatedRows) => console.log('Add', activatedRows)},
+        {label: 'Edit', handle: (activatedRows) => console.log('Edit', activatedRows)},
+        {label: 'Delete', handle: (activatedRows) => console.log('Delete', activatedRows)}
+      ]"
       height="calc(100vh - 10rem)"/>
 </template>
 

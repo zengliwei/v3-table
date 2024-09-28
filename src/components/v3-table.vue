@@ -135,6 +135,10 @@ let cols = ref([]),
     showAutoWidthCol = ref(false),
     lastLeftFixedColIdx = ref(-1),
     rowTotal = 0,
+    toolbarActions = ref(props.toolbarActions.map((action) => {
+      action['params'] = [activatedRows.value];
+      return action;
+    })),
     tipCheckedStatus = computed(() => {
       return props.tipCheckedStatus
           .replace(':checked', activatedRows.value.length)
@@ -433,7 +437,7 @@ onMounted(() => {
       <div class="v3-table-header" ref="elHeader">
 
         <div v-if="showToolbar" class="v3-table-header-toolbar">
-          <div class="left">
+          <div class="v3-table-header-toolbar-left">
             <div class="v3-table-header-toolbar-actions">
               <v3-table-actions :actions="toolbarActions"/>
             </div>
@@ -442,7 +446,7 @@ onMounted(() => {
               <slot name="toolbar-left"></slot>
             </div>
           </div>
-          <div class="right">
+          <div class="v3-table-header-toolbar-right">
             <slot name="toolbar-right"></slot>
           </div>
         </div>
@@ -645,6 +649,80 @@ onMounted(() => {
   background-image: var(--v3-table-cell-expander-expanded-icon-url);
 }
 
+.v3-table .v3-table-main-action {
+  background: var(--v3-table-button-bg);
+  border: 1px solid var(--v3-table-border-color);
+  border-radius: var(--v3-table-button-border-radius);
+  color: var(--v3-table-button-color);
+  cursor: pointer;
+  padding: var(--v3-table-button-padding);
+}
+
+.v3-table .v3-table-action-box {
+  display: flex;
+}
+
+.v3-table .v3-table-action-box .v3-table-main-action {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.v3-table .v3-table-action-expander {
+  background: var(--v3-table-button-bg);
+  border-color: var(--v3-table-border-color);
+  border-style: solid;
+  border-width: 1px 1px 1px 0;
+  border-top-right-radius: var(--v3-table-button-border-radius);
+  border-bottom-right-radius: var(--v3-table-button-border-radius);
+  cursor: pointer;
+  display: block;
+  padding: var(--v3-table-action-expander-padding);
+}
+
+.v3-table .v3-table-action-expander::after {
+  background: var(--v3-table-action-expander-icon-url) no-repeat center center;
+  background-size: var(--v3-table-action-expander-icon-width) var(--v3-table-action-expander-icon-height);
+  content: '';
+  display: block;
+  height: var(--v3-table-action-expander-icon-height);
+  width: var(--v3-table-action-expander-icon-width);
+}
+
+.v3-table .v3-table-action-expander.expanded::after {
+  background-image: var(--v3-table-action-expander-expanded-icon-url);
+}
+
+.v3-table .v3-table-actions-dropdown {
+  background: var(--v3-table-button-bg);
+  border: 1px solid var(--v3-table-border-color);
+  border-radius: var(--v3-table-button-border-radius);
+  display: none;
+  min-width: var(--v3-table-actions-dropdown-min-width);
+  position: absolute;
+  top: 100%;
+}
+
+.v3-table .v3-table-actions-dropdown.expanded {
+  display: block;
+}
+
+.v3-table .v3-table-action {
+  background: var(--v3-table-button-bg);
+  border-bottom: 1px solid var(--v3-table-border-color);
+  color: var(--v3-table-button-color);
+  cursor: pointer;
+  display: block;
+  padding: var(--v3-table-button-padding);
+}
+
+.v3-table .v3-table-action:hover {
+  background: var(--v3-table-button-hover-bg);
+}
+
+.v3-table .v3-table-action:last-child {
+  border-bottom: 0;
+}
+
 
 /*
  * Main Container
@@ -680,12 +758,15 @@ onMounted(() => {
   z-index: 2;
 }
 
-.v3-table .v3-table-header-checked-status {
-  color: var(--v3-table-header-checked-status-color);
+.v3-table .v3-table-header-toolbar > div {
+  display: flex;
+  align-items: center;
+  gap: var(--v3-table-header-toolbar-gap);
+  position: relative;
 }
 
-.v3-table .v3-table-header-toolbar > div {
-  position: relative;
+.v3-table .v3-table-header-checked-status {
+  color: var(--v3-table-header-checked-status-color);
 }
 
 .v3-table .v3-table-header table {
@@ -854,7 +935,7 @@ onMounted(() => {
 .v3-table button {
   background: var(--v3-table-button-bg);
   border: 1px solid var(--v3-table-border-color);
-  color: inherit;
+  color: var(--v3-table-button-color);
   cursor: pointer;
   display: block;
   outline: none;
@@ -862,5 +943,9 @@ onMounted(() => {
   font-size: var(--v3-table-button-font-size);
   min-width: var(--v3-table-button-min-width);
   padding: var(--v3-table-button-padding);
+}
+
+.v3-table button:hover {
+  background: var(--v3-table-button-hover-bg);
 }
 </style>
