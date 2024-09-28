@@ -341,7 +341,7 @@ const rowDbClick = (row) => {
             :filter-types="filterTypes"
             :data="data"
             :page-size="20"
-            height="calc(100vh - 8rem)"
+            height="calc(100vh - 10rem)"
             @row-click="rowClick"
             @row-db-click="rowDbClick"/>
 </template>

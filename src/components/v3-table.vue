@@ -2,7 +2,7 @@
 import {defineEmits, defineProps, defineComponent, ref, computed, watch, onMounted} from 'vue';
 import v3TableTr from './v3-table-tr.vue';
 
-defineEmits(['row-click', 'row-db-click']);
+const emits = defineEmits(['row-click', 'row-db-click', 'update:page-size']);
 
 const props = defineProps({
   columns: {
@@ -105,8 +105,9 @@ let cols = ref([]),
     lastLeftFixedColIdx = ref(-1),
     rowTotal = 0,
     page = ref(1),
+    pageSize = ref(props.pageSize),
     pageCount = computed(() => {
-      return Math.ceil(rowTotal / props.pageSize);
+      return Math.ceil(rowTotal / pageSize.value);
     }),
     pages = computed(() => {
       let tmpPages = [];
@@ -123,8 +124,7 @@ let cols = ref([]),
     }),
     sortOrders = [];
 
-const elTable = ref(),
-    elMain = ref(),
+const elMain = ref(),
     elHeader = ref(),
     elBody = ref(),
     elFooter = ref();
@@ -132,7 +132,6 @@ const elTable = ref(),
 watch(
     () => props.columns,
     (columns) => {
-
       /*
        * Checkbox and index columns should be fixed and have default width
        * when there is a column fixed on left side after them.
@@ -221,8 +220,15 @@ watch(
     {immediate: true}
 );
 
-const checkAll = function () {
-  console.log('checkAll');
+watch(
+    () => pageSize.value,
+    (size) => {
+      switchPageSize(size);
+    }
+);
+
+const checkAll = function (status) {
+  console.log('checkAll', status);
 };
 
 const filterByLocal = function () {
@@ -242,7 +248,7 @@ const filterByLocal = function () {
       return true;
     });
   });
-  rows.value = filteredRows.slice(0, props.pageSize);
+  rows.value = filteredRows.slice(0, pageSize.value);
   rowTotal = filteredRows.length;
   page.value = 1;
 };
@@ -254,7 +260,7 @@ const refreshByRemote = function () {
       c: props.columns.map((col) => col['field']),
       f: filters,
       p: page,
-      ps: props.pageSize
+      ps: pageSize.value
     }
   });
 };
@@ -276,7 +282,7 @@ const sortByLocal = function () {
     }
     return 0;
   });
-  rows.value = filteredRows.slice((page.value - 1) * props.pageSize, page.value * props.pageSize);
+  rows.value = filteredRows.slice((page.value - 1) * pageSize.value, page.value * pageSize.value);
 };
 
 const sortByRemote = function () {
@@ -304,8 +310,15 @@ const switchPage = function (p) {
     refreshByRemote();
   } else {
     page.value = p;
-    rows.value = filteredRows.slice((page.value - 1) * props.pageSize, page.value * props.pageSize);
+    rows.value = filteredRows.slice((page.value - 1) * pageSize.value, page.value * pageSize.value);
   }
+};
+
+const switchPageSize = function (size) {
+  pageSize.value = parseInt(size);
+  page.value = 1;
+  rows.value = filteredRows.slice((page.value - 1) * pageSize.value, page.value * pageSize.value);
+  emits('update:page-size', pageSize.value);
 };
 
 if (props.autoLoad) {
@@ -314,7 +327,7 @@ if (props.autoLoad) {
   } else {
     sourceRows = props.data;
     filteredRows = props.data;
-    rows.value = filteredRows.slice((page.value - 1) * props.pageSize, page.value * props.pageSize);
+    rows.value = filteredRows.slice((page.value - 1) * pageSize.value, page.value * pageSize.value);
     rowTotal = filteredRows.length;
   }
 }
@@ -336,11 +349,11 @@ onMounted(() => {
             <template v-for="(col, c) in cols">
               <th v-if="col['type'] === 'checkbox'"
                   class="checkbox" :style="col['style']">
-                <div><input type="checkbox" @click="checkAll"/></div>
+                <div><input type="checkbox" @click="evt => checkAll(evt.currentTarget.checked)"/></div>
               </th>
               <th v-if="col['type'] === 'index'"
                   class="index" :style="col['style']">
-                <div>#</div>
+                <div v-text="col['title'] || '#'"></div>
               </th>
               <th v-if="col['type'] === 'data' && !col['hidden']"
                   :class="col['cssClass']" :style="col['style']">
@@ -397,28 +410,38 @@ onMounted(() => {
       </div>
     </div>
     <div class="v3-table-footer" ref="elFooter">
-      <div></div>
+      <div class="v3-table-page-sizes">
+        <select @change="(evt) => switchPageSize(evt.currentTarget.value)">
+          <option v-for="p in pageSizes" :value="p" :selected="p === pageSize" v-text="p"></option>
+        </select>
+      </div>
       <div v-text="pagingMsg"></div>
       <div class="paginator">
         <a href="#" :class="{disabled: page === 1}"
            v-text="props.labelPrevPage"
            @click.prevent="switchPage(page - 1)"></a>
         <select @change="(evt) => switchPage(evt.currentTarget.value)">
-          <option v-for="p in pages" :value="p" v-text="p"></option>
+          <option v-for="p in pages" :value="p" :selected="p === page" v-text="p"></option>
         </select>
         <a href="#" :class="{disabled: page === pageCount}"
            v-text="props.labelNextPage"
            @click.prevent="switchPage(page + 1)"></a>
       </div>
     </div>
+    <div class="v3-table-loader"></div>
   </div>
 </template>
 
 <style>
+/*
+ * Definition and functionally styles only
+ */
+
 .v3-table {
   border-color: var(--v3-table-border-color);
   border-style: solid;
   border-width: 1px;
+  position: relative;
   width: var(100%);
 }
 
@@ -426,10 +449,20 @@ onMounted(() => {
   box-sizing: border-box;
 }
 
+
+/*
+ * Main Container
+ */
+
 .v3-table .v3-table-main {
   overflow: auto;
   position: relative;
 }
+
+
+/*
+ * Header
+ */
 
 .v3-table .v3-table-header {
   position: sticky;
@@ -477,6 +510,11 @@ onMounted(() => {
 .v3-table .v3-table-header th.sort.desc > div:after {
   background-image: var(--v3-table-header-sort-desc-icon-url);
 }
+
+
+/*
+ * Body
+ */
 
 .v3-table .v3-table-body {
   z-index: 1;
@@ -530,6 +568,11 @@ onMounted(() => {
   justify-content: center;
 }
 
+
+/*
+ * Footer
+ */
+
 .v3-table .v3-table-footer {
   background: var(--v3-table-footer-bg);
   border-color: var(--v3-table-border-color);
@@ -563,6 +606,11 @@ onMounted(() => {
 .v3-table .v3-table-footer .paginator select {
   padding: var(--v3-table-paginator-select-padding);
 }
+
+
+/*
+ * Elements
+ */
 
 .v3-table a {
   color: var(--v3-table-link-color);

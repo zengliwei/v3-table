@@ -70,16 +70,17 @@ const check = function () {
     </td>
   </tr>
   <template v-if="row['children']">
-    <v3-table-tr v-for="child in row['children']"
-                 :row="child"
-                 :cols="cols"
-                 :row-actions="rowActions"
-                 :show-auto-width-cols="showAutoWidthCol"
-                 :last-left-fixed-col-idx="lastLeftFixedColIdx"
-                 :activated-rows="activatedRows"
-                 :level="level + 1"
-                 @click="(obj) => $emit('click', obj)"
-                 @db-click="(obj) => $emit('db-click', obj)"></v3-table-tr>
+    <v3-table-tr
+        v-for="child in row['children']"
+        :row="child"
+        :cols="cols"
+        :row-actions="rowActions"
+        :show-auto-width-cols="showAutoWidthCol"
+        :last-left-fixed-col-idx="lastLeftFixedColIdx"
+        :activated-rows="activatedRows"
+        :level="level + 1"
+        @click="(obj) => $emit('click', obj)"
+        @db-click="(obj) => $emit('db-click', obj)"></v3-table-tr>
   </template>
 </template>
 

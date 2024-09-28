@@ -33,7 +33,7 @@ const renderContent = function (row, col) {
   return html;
 };
 
-const switchChild = function (row) {
+const showChild = function (row) {
 }
 </script>
 
@@ -43,14 +43,13 @@ const switchChild = function (row) {
       @click="$emit('click')">
     <div>
       <div v-if="col['getChildren']"
-           class="flex-shrink-0 w-4 d-flex"
-           :style="{marginLeft: level - 1 + 'rem'}">
-        <img v-if="row['_has_child_'] && !row['_loading_']" alt
-             class="cursor-pointer w-3"
-             :style="{transform: row['_expanded_'] ? 'rotate(90deg)' : 'rotate(0deg)'}"
-             @click.prevent.stop="switchChild(row)"/>
-        <img v-if="row['_loading_']"
-             class="w-3 icon-rotate" alt/>
+           :class="`level-${level}`">
+        <span
+            :class="{
+              loading: row['_loading_'],
+              expanded: row['_expanded_']
+            }"
+            @click.prevent.stop="showChild(row)"></span>
       </div>
       <div v-if="col['tpl']" class="flex-fill" :v-slot="col['tpl']"></div>
       <div v-else class="flex-fill" v-html="renderContent(row, col)"></div>
