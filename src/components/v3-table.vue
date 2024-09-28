@@ -284,6 +284,8 @@ const getAllRows = function (rows) {
 const checkAll = function (status) {
   getAllRows(rows.value).forEach((row) => {
     row['_checked_'] = status;
+    status ? activatedRows.value.push(row)
+        : activatedRows.value.splice(activatedRows.value.indexOf(row), 1);
   });
 };
 

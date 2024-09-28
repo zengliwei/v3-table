@@ -62,6 +62,7 @@ const check = function (status) {
         <div>
           <input type="checkbox"
                  :checked="row['_checked_']"
+                 @click.stop
                  @change="(evt) => check(evt.currentTarget.checked)"/>
         </div>
       </td>
