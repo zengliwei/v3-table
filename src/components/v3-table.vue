@@ -3,7 +3,7 @@ import {defineEmits, defineProps, defineComponent, defineExpose, ref, computed, 
 import v3TableTr from './v3-table-tr.vue';
 import V3TableButtonGroup from "./v3-table-button-group.vue";
 
-const emits = defineEmits([
+const emit = defineEmits([
   'row-click', 'row-dblclick', 'row-mouseenter', 'row-mouseleave',
   'cell-click', 'cell-dblclick', 'cell-mouseenter', 'cell-mouseleave',
   'update:page-size'
@@ -289,6 +289,8 @@ const checkAll = function (status) {
 
 const checkRow = function (row, status) {
   row['_checked_'] = status;
+  status ? activatedRows.value.push(row)
+      : activatedRows.value.splice(activatedRows.value.indexOf(row), 1);
   let allChecked = true, hasChecked = false;
   getAllRows(rows.value).forEach((r) => {
     if (!r['_checked_']) {
@@ -298,6 +300,11 @@ const checkRow = function (row, status) {
     }
   });
   elCheckAll.value[0].indeterminate = !allChecked && hasChecked;
+};
+
+const clickRow = function (row) {
+  checkRow(row, !row['_checked_']);
+  emit('row-click', row);
 };
 
 const filterByLocal = function () {
@@ -395,7 +402,7 @@ const switchPageSize = function (size) {
   pageSize.value = parseInt(size);
   page.value = 1;
   rows.value = filteredRows.slice((page.value - 1) * pageSize.value, page.value * pageSize.value);
-  emits('update:page-size', pageSize.value);
+  emit('update:page-size', pageSize.value);
 };
 
 defineExpose({filter});
@@ -492,7 +499,7 @@ onMounted(() => {
                   :show-auto-width-col="showAutoWidthCol"
                   :last-left-fixed-col-idx="lastLeftFixedColIdx"
                   :activated-rows="activatedRows"
-                  @click="(obj) => $emit('row-click', obj)"
+                  @click="(obj) => clickRow(obj)"
                   @dblclick="(obj) => $emit('row-dblclick', obj)"
                   @mouseenter="(obj) => $emit('row-mouseenter', obj)"
                   @mouseleave="(obj) => $emit('row-mouseleave', obj)"
