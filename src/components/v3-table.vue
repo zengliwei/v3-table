@@ -1,7 +1,7 @@
 <script setup>
 import {defineEmits, defineProps, defineComponent, defineExpose, ref, computed, watch, onMounted} from 'vue';
 import v3TableTr from './v3-table-tr.vue';
-import V3TableButtonGroup from "./v3-table-button-group.vue";
+import V3TableActions from "./v3-table-actions.vue";
 
 const emit = defineEmits([
   'row-click', 'row-dblclick', 'row-mouseenter', 'row-mouseleave',
@@ -435,7 +435,7 @@ onMounted(() => {
         <div v-if="showToolbar" class="v3-table-header-toolbar">
           <div class="left">
             <div class="v3-table-header-toolbar-actions">
-              <v3-table-button-group :buttons="toolbarActions"/>
+              <v3-table-actions :actions="toolbarActions"/>
             </div>
             <div v-if="hasCheckbox" class="v3-table-header-checked-status" v-text="tipCheckedStatus"></div>
             <div>
