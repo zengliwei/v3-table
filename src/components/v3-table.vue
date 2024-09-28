@@ -1,5 +1,5 @@
 <script setup>
-import {defineEmits, defineProps, defineComponent, ref, computed, watch, onMounted} from 'vue';
+import {defineEmits, defineProps, defineComponent, defineExpose, ref, computed, watch, onMounted} from 'vue';
 import v3TableTr from './v3-table-tr.vue';
 import V3TableButtonGroup from "./v3-table-button-group.vue";
 
@@ -134,7 +134,6 @@ let cols = ref([]),
     hasCheckbox = ref(false),
     showAutoWidthCol = ref(false),
     lastLeftFixedColIdx = ref(-1),
-    toolbarFilterShown = ref(false),
     rowTotal = 0,
     tipCheckedStatus = computed(() => {
       return props.tipCheckedStatus
@@ -240,6 +239,7 @@ watch(
           sort: col['sort'] || false,
           sortDir: col['sortDir'] || false,
           filter: col['filter'] || false,
+          expandable: col['expandable'] || false,
           cssClass: {
             'data': col['type'] === 'data' || col['type'] === undefined,
             'align-center': col['align'] === 'center',
@@ -270,8 +270,19 @@ watch(
     }
 );
 
+const getAllRows = function (rows) {
+  let childRows = [];
+  rows.forEach((row) => {
+    childRows.push(row);
+    if (row['children'] && row['children'].length > 0) {
+      childRows.push(...getAllRows(row['children']));
+    }
+  });
+  return childRows;
+};
+
 const checkAll = function (status) {
-  rows.value.forEach((row) => {
+  getAllRows(rows.value).forEach((row) => {
     row['_checked_'] = status;
   });
 };
@@ -279,7 +290,7 @@ const checkAll = function (status) {
 const checkRow = function (row, status) {
   row['_checked_'] = status;
   let allChecked = true, hasChecked = false;
-  rows.value.forEach((r) => {
+  getAllRows(rows.value).forEach((r) => {
     if (!r['_checked_']) {
       allChecked = false;
     } else {
@@ -309,6 +320,14 @@ const filterByLocal = function () {
   rows.value = filteredRows.slice(0, pageSize.value);
   rowTotal = filteredRows.length;
   page.value = 1;
+};
+
+const filter = function () {
+  if (props.srcHandler) {
+    refreshByRemote();
+  } else {
+    filterByLocal();
+  }
 };
 
 const refreshByRemote = function () {
@@ -378,6 +397,8 @@ const switchPageSize = function (size) {
   rows.value = filteredRows.slice((page.value - 1) * pageSize.value, page.value * pageSize.value);
   emits('update:page-size', pageSize.value);
 };
+
+defineExpose({filter});
 
 if (props.autoLoad) {
   if (props.srcUrl) {
@@ -568,8 +589,51 @@ onMounted(() => {
 .v3-table th > div,
 .v3-table td > div {
   display: flex;
-  align-content: center;
+  align-items: center;
   padding: var(--v3-table-cell-box-padding);
+}
+
+.v3-table .v3-table-cell-lv {
+  padding-left: var(--v3-table-cell-lv-padding);
+  position: relative;
+  height: var(--v3-table-line-height);
+  width: var(--v3-table-cell-lv-base-width);
+}
+
+.v3-table .v3-table-cell-lv.lv1 {
+  width: calc(var(--v3-table-cell-lv-base-width) + var(--v3-table-cell-lv-width) * 1);
+}
+
+.v3-table .v3-table-cell-lv.lv2 {
+  width: calc(var(--v3-table-cell-lv-base-width) + var(--v3-table-cell-lv-width) * 2);
+}
+
+.v3-table .v3-table-cell-lv.lv3 {
+  width: calc(var(--v3-table-cell-lv-base-width) + var(--v3-table-cell-lv-width) * 3);
+}
+
+.v3-table .v3-table-cell-lv.lv4 {
+  width: calc(var(--v3-table-cell-lv-base-width) + var(--v3-table-cell-lv-width) * 4);
+}
+
+.v3-table .v3-table-cell-expander {
+  cursor: pointer;
+  display: block;
+  background: var(--v3-table-cell-expander-icon-url) no-repeat center center;
+  background-size: var(--v3-table-cell-expander-icon-width) var(--v3-table-cell-expander-icon-height);
+  left: var(--v3-table-cell-expander-icon-left);
+  top: var(--v3-table-cell-expander-icon-top);
+  height: var(--v3-table-line-height);
+  width: var(--v3-table-cell-expander-icon-width);
+  position: absolute;
+}
+
+.v3-table .v3-table-cell-expander.loading {
+  background-image: var(--v3-table-cell-expander-loading-icon-url);
+}
+
+.v3-table .v3-table-cell-expander.expanded {
+  background-image: var(--v3-table-cell-expander-expanded-icon-url);
 }
 
 

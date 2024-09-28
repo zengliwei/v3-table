@@ -66,10 +66,10 @@ const check = function (status) {
         </div>
       </td>
       <td v-if="col['type'] === 'index'" class="index" :style="col.style">
-        <div v-text="idx + 1"></div>
+        <div v-text="(idx + 1) || ''"></div>
       </td>
       <v3-table-td
-          ref="td" :col="col" :row="row" :row-idx="idx"
+          ref="td" :col="col" :row="row" :row-idx="idx" :level="level"
           :class="{data: true, 'last-fixed-left': lastLeftFixedColIdx === c}"
           @click="$emit('cell-click', row, col)"
           @dblclick="$emit('cell-dblclick', row, col)"
@@ -87,7 +87,7 @@ const check = function (status) {
         :row="child"
         :cols="cols"
         :row-actions="rowActions"
-        :show-auto-width-cols="showAutoWidthCol"
+        :show-auto-width-col="showAutoWidthCol"
         :last-left-fixed-col-idx="lastLeftFixedColIdx"
         :activated-rows="activatedRows"
         :level="level + 1"
@@ -95,6 +95,7 @@ const check = function (status) {
         @dblclick="(obj) => $emit('dblclick', obj)"
         @mouseenter="(obj) => $emit('mouseenter', obj)"
         @mouseleave="(obj) => $emit('mouseleave', obj)"
+        @check="(obj, status) => $emit('check', obj, status)"
         @cell-click="(obj, col) => $emit('cell-click', obj, col)"
         @cell-dblclick="(obj, col) => $emit('cell-dblclick', obj, col)"
         @cell-mouseenter="(obj, col) => $emit('cell-mouseenter', obj, col)"

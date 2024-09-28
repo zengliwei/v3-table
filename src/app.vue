@@ -15,7 +15,7 @@ let filterTypes = {
 let columns = [
   {type: 'checkbox'},
   {type: 'index'},
-  {field: 'name', title: 'Name', width: 220, sort: true, fixed: 'left', filter: {type: 'text'}},
+  {field: 'name', title: 'Name', width: 220, sort: true, expandable: true, fixed: 'left', filter: {type: 'text'}},
   {field: 'age', title: 'Age', width: 100, align: 'center', sort: true, filter: {type: 'text'}},
   {
     field: 'gender',
@@ -35,25 +35,28 @@ let data = [
     "age": 48,
     "gender": "female",
     "mobile": "201-312-8053",
-    "email": "leo10@durgan.com"
-  }, {
-    "name": "Meggie Prohaska IV",
-    "age": 47,
-    "gender": "female",
-    "mobile": "(979) 752-8128",
-    "email": "samson34@hotmail.com"
-  }, {
-    "name": "Chadd Beier",
-    "age": 32,
-    "gender": "male",
-    "mobile": "505.956.9065",
-    "email": "sabrina.spinka@mcglynn.info"
-  }, {
-    "name": "Mara Tremblay",
-    "age": 29,
-    "gender": "female",
-    "mobile": "463-704-9074",
-    "email": "sanford.kihn@morissette.com"
+    "email": "leo10@durgan.com",
+    "children": [
+      {
+        "name": "Meggie Prohaska IV",
+        "age": 47,
+        "gender": "female",
+        "mobile": "(979) 752-8128",
+        "email": "samson34@hotmail.com"
+      }, {
+        "name": "Chadd Beier",
+        "age": 32,
+        "gender": "male",
+        "mobile": "505.956.9065",
+        "email": "sabrina.spinka@mcglynn.info"
+      }, {
+        "name": "Mara Tremblay",
+        "age": 29,
+        "gender": "female",
+        "mobile": "463-704-9074",
+        "email": "sanford.kihn@morissette.com"
+      }
+    ]
   }, {
     "name": "Bianka Casper",
     "age": 33,

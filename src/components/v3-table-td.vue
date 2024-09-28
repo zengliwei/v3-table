@@ -35,7 +35,7 @@ const renderContent = function (row, col) {
   return html;
 };
 
-const showChild = function (row) {
+const expand = function (row) {
 }
 </script>
 
@@ -47,14 +47,16 @@ const showChild = function (row) {
       @mouseenter="$emit('mouseenter')"
       @mouseleave="$emit('mouseleave')">
     <div>
-      <div v-if="col['getChildren']"
-           :class="`level-${level}`">
+      <div v-if="col['expandable']"
+           :class="`v3-table-cell-lv lv${level}`">
         <span
+            v-if="row['children']"
             :class="{
-              loading: row['_loading_'],
-              expanded: row['_expanded_']
+              'v3-table-cell-expander': true,
+              'loading': row['_loading_'],
+              'expanded': row['_expanded_']
             }"
-            @click.prevent.stop="showChild(row)"></span>
+            @click.prevent.stop="expand(row)"></span>
       </div>
       <div v-if="col['tpl']" class="flex-fill" :v-slot="col['tpl']"></div>
       <div v-else class="flex-fill" v-html="renderContent(row, col)"></div>
