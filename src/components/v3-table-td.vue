@@ -1,5 +1,7 @@
 <script setup>
-import {defineProps, defineComponent, ref, watch} from 'vue';
+import {defineProps, defineEmits, ref, watch} from 'vue';
+
+defineEmits(['click', 'dblclick', 'mouseenter', 'mouseleave']);
 
 const props = defineProps({
   col: {
@@ -40,7 +42,10 @@ const showChild = function (row) {
 <template>
   <td v-if="col['type'] === 'data' && !col['hidden']"
       :class="col['cssClass']" :style="col['style']"
-      @click="$emit('click')">
+      @click="$emit('click')"
+      @dblclick="$emit('dblclick')"
+      @mouseenter="$emit('mouseenter')"
+      @mouseleave="$emit('mouseleave')">
     <div>
       <div v-if="col['getChildren']"
            :class="`level-${level}`">

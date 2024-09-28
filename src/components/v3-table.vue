@@ -3,7 +3,11 @@ import {defineEmits, defineProps, defineComponent, ref, computed, watch, onMount
 import v3TableTr from './v3-table-tr.vue';
 import V3TableButtonGroup from "./v3-table-button-group.vue";
 
-const emits = defineEmits(['row-click', 'row-db-click', 'update:page-size']);
+const emits = defineEmits([
+  'row-click', 'row-dblclick', 'row-mouseenter', 'row-mouseleave',
+  'cell-click', 'cell-dblclick', 'cell-mouseenter', 'cell-mouseleave',
+  'update:page-size'
+]);
 
 const props = defineProps({
   columns: {
@@ -86,7 +90,7 @@ const props = defineProps({
     default: 1
   },
 
-  tipCheckboxStatus: {
+  tipCheckedStatus: {
     type: String,
     default: ':checked item(s) checked'
   },
@@ -132,8 +136,8 @@ let cols = ref([]),
     lastLeftFixedColIdx = ref(-1),
     toolbarFilterShown = ref(false),
     rowTotal = 0,
-    tipCheckboxStatus = computed(() => {
-      return props.tipCheckboxStatus
+    tipCheckedStatus = computed(() => {
+      return props.tipCheckedStatus
           .replace(':checked', activatedRows.value.length)
           .replace(':total', rows.value.length);
     }),
@@ -160,7 +164,8 @@ let cols = ref([]),
 const elMain = ref(),
     elHeader = ref(),
     elBody = ref(),
-    elFooter = ref();
+    elFooter = ref(),
+    elCheckAll = ref();
 
 watch(
     () => props.columns,
@@ -266,7 +271,22 @@ watch(
 );
 
 const checkAll = function (status) {
-  console.log('checkAll', status);
+  rows.value.forEach((row) => {
+    row['_checked_'] = status;
+  });
+};
+
+const checkRow = function (row, status) {
+  row['_checked_'] = status;
+  let allChecked = true, hasChecked = false;
+  rows.value.forEach((r) => {
+    if (!r['_checked_']) {
+      allChecked = false;
+    } else {
+      hasChecked = true;
+    }
+  });
+  elCheckAll.value[0].indeterminate = !allChecked && hasChecked;
 };
 
 const filterByLocal = function () {
@@ -387,15 +407,13 @@ onMounted(() => {
             <div class="v3-table-header-toolbar-actions">
               <v3-table-button-group :buttons="toolbarActions"/>
             </div>
-            <div v-if="hasCheckbox" class="v3-table-header-toolbar-checkbox-status" v-text="tipCheckboxStatus"></div>
-          </div>
-          <div class="v3-table-header-toolbar-filter">
-            <button type="button" @click="toolbarFilterShown = !toolbarFilterShown">
-              <span v-text="labelToolbarFilter"></span>
-            </button>
-            <div :class="{filters: true, shown: toolbarFilterShown}">
-              <div v-for="filter in toolbarFilters"></div>
+            <div v-if="hasCheckbox" class="v3-table-header-checked-status" v-text="tipCheckedStatus"></div>
+            <div>
+              <slot name="toolbar-left"></slot>
             </div>
+          </div>
+          <div class="right">
+            <slot name="toolbar-right"></slot>
           </div>
         </div>
 
@@ -405,7 +423,10 @@ onMounted(() => {
             <template v-for="(col, c) in cols">
               <th v-if="col['type'] === 'checkbox'"
                   class="checkbox" :style="col['style']">
-                <div><input type="checkbox" @click="evt => checkAll(evt.currentTarget.checked)"/></div>
+                <div>
+                  <input ref="elCheckAll" type="checkbox"
+                         @click="evt => checkAll(evt.currentTarget.checked)"/>
+                </div>
               </th>
               <th v-if="col['type'] === 'index'"
                   class="index" :style="col['style']">
@@ -451,7 +472,14 @@ onMounted(() => {
                   :last-left-fixed-col-idx="lastLeftFixedColIdx"
                   :activated-rows="activatedRows"
                   @click="(obj) => $emit('row-click', obj)"
-                  @db-click="(obj) => $emit('row-db-click', obj)"></v3-table-tr>
+                  @dblclick="(obj) => $emit('row-dblclick', obj)"
+                  @mouseenter="(obj) => $emit('row-mouseenter', obj)"
+                  @mouseleave="(obj) => $emit('row-mouseleave', obj)"
+                  @check="(obj, status) => checkRow(obj, status)"
+                  @cell-click="(obj, col) => $emit('cell-click', obj, col)"
+                  @cell-dblclick="(obj, col) => $emit('cell-dblclick', obj, col)"
+                  @cell-mouseenter="(obj, col) => $emit('cell-mouseenter', obj, col)"
+                  @cell-mouseleave="(obj, col) => $emit('cell-mouseleave', obj, col)"/>
             </template>
           </template>
           <template v-else>
@@ -579,18 +607,12 @@ onMounted(() => {
   z-index: 2;
 }
 
-v3-table-header-toolbar-checkbox-status {
+.v3-table .v3-table-header-checked-status {
+  color: var(--v3-table-header-checked-status-color);
 }
 
-.v3-table .v3-table-header-toolbar-filter {
+.v3-table .v3-table-header-toolbar > div {
   position: relative;
-}
-
-.v3-table .v3-table-header-toolbar-filter .filters {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
 }
 
 .v3-table .v3-table-header table {

@@ -326,24 +326,15 @@ let data = [
     "email": "juliet14@harber.com"
   }, {"name": "Bart Schimmel", "age": 18, "gender": "male", "mobile": "+1.714.351.6117", "email": "zborer@hotmail.com"}
 ];
-
-const rowClick = (row) => {
-  console.log('rowClick', row);
-};
-
-const rowDbClick = (row) => {
-  console.log('rowDbClick', row);
-};
 </script>
 
 <template>
-  <v3-table :columns="columns"
-            :filter-types="filterTypes"
-            :data="data"
-            :page-size="20"
-            height="calc(100vh - 10rem)"
-            @row-click="rowClick"
-            @row-db-click="rowDbClick"/>
+  <v3-table
+      :columns="columns"
+      :filter-types="filterTypes"
+      :data="data"
+      :page-size="20"
+      height="calc(100vh - 10rem)"/>
 </template>
 
 <style scoped>
