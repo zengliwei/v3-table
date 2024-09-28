@@ -1,6 +1,7 @@
 <script setup>
 import {defineEmits, defineProps, defineComponent, ref, computed, watch, onMounted} from 'vue';
 import v3TableTr from './v3-table-tr.vue';
+import V3TableButtonGroup from "./v3-table-button-group.vue";
 
 const emits = defineEmits(['row-click', 'row-db-click', 'update:page-size']);
 
@@ -15,6 +16,16 @@ const props = defineProps({
     default: () => []
   },
 
+  showToolbar: {
+    type: Boolean,
+    default: true
+  },
+
+  toolbarActions: {
+    type: Array,
+    default: () => []
+  },
+
   showColumnFilter: {
     type: Boolean,
     default: true
@@ -22,6 +33,11 @@ const props = defineProps({
 
   filterTypes: {
     type: Object
+  },
+
+  toolbarFilters: {
+    type: Array,
+    default: []
   },
 
   data: {
@@ -70,7 +86,12 @@ const props = defineProps({
     default: 1
   },
 
-  pagingMsg: {
+  tipCheckboxStatus: {
+    type: String,
+    default: ':checked item(s) checked'
+  },
+
+  tipPaging: {
     type: String,
     default: 'Page :page of :page_count (:row_total items)'
   },
@@ -78,6 +99,11 @@ const props = defineProps({
   tipNoData: {
     type: String,
     default: 'No data'
+  },
+
+  labelToolbarFilter: {
+    type: String,
+    default: 'Filter'
   },
 
   labelPrevPage: {
@@ -101,9 +127,16 @@ let cols = ref([]),
     sourceRows = [],
     activatedRows = ref([]),
     filters = ref([]),
+    hasCheckbox = ref(false),
     showAutoWidthCol = ref(false),
     lastLeftFixedColIdx = ref(-1),
+    toolbarFilterShown = ref(false),
     rowTotal = 0,
+    tipCheckboxStatus = computed(() => {
+      return props.tipCheckboxStatus
+          .replace(':checked', activatedRows.value.length)
+          .replace(':total', rows.value.length);
+    }),
     page = ref(1),
     pageSize = ref(props.pageSize),
     pageCount = computed(() => {
@@ -116,8 +149,8 @@ let cols = ref([]),
       }
       return tmpPages;
     }),
-    pagingMsg = computed(() => {
-      return props.pagingMsg
+    tipPaging = computed(() => {
+      return props.tipPaging
           .replace(':page_count', pageCount.value)
           .replace(':page', page.value)
           .replace(':row_total', rowTotal);
@@ -132,6 +165,11 @@ const elMain = ref(),
 watch(
     () => props.columns,
     (columns) => {
+      /*
+       * Show selected status when a checkbox column set.
+       */
+      hasCheckbox.value = columns.filter((col) => col['type'] === 'checkbox').length > 0;
+
       /*
        * Checkbox and index columns should be fixed and have default width
        * when there is a column fixed on left side after them.
@@ -343,6 +381,24 @@ onMounted(() => {
   <div class="v3-table" :style="{height: height}" ref="elTable">
     <div class="v3-table-main" ref="elMain">
       <div class="v3-table-header" ref="elHeader">
+
+        <div v-if="showToolbar" class="v3-table-header-toolbar">
+          <div class="left">
+            <div class="v3-table-header-toolbar-actions">
+              <v3-table-button-group :buttons="toolbarActions"/>
+            </div>
+            <div v-if="hasCheckbox" class="v3-table-header-toolbar-checkbox-status" v-text="tipCheckboxStatus"></div>
+          </div>
+          <div class="v3-table-header-toolbar-filter">
+            <button type="button" @click="toolbarFilterShown = !toolbarFilterShown">
+              <span v-text="labelToolbarFilter"></span>
+            </button>
+            <div :class="{filters: true, shown: toolbarFilterShown}">
+              <div v-for="filter in toolbarFilters"></div>
+            </div>
+          </div>
+        </div>
+
         <table>
           <thead>
           <tr>
@@ -380,6 +436,7 @@ onMounted(() => {
           </thead>
         </table>
       </div>
+
       <div class="v3-table-body" ref="elBody">
         <table>
           <tbody>
@@ -409,13 +466,14 @@ onMounted(() => {
         </table>
       </div>
     </div>
+
     <div class="v3-table-footer" ref="elFooter">
       <div class="v3-table-page-sizes">
         <select @change="(evt) => switchPageSize(evt.currentTarget.value)">
           <option v-for="p in pageSizes" :value="p" :selected="p === pageSize" v-text="p"></option>
         </select>
       </div>
-      <div v-text="pagingMsg"></div>
+      <div v-text="tipPaging"></div>
       <div class="paginator">
         <a href="#" :class="{disabled: page === 1}"
            v-text="props.labelPrevPage"
@@ -428,6 +486,7 @@ onMounted(() => {
            @click.prevent="switchPage(page + 1)"></a>
       </div>
     </div>
+
     <div class="v3-table-loader"></div>
   </div>
 </template>
@@ -449,6 +508,42 @@ onMounted(() => {
   box-sizing: border-box;
 }
 
+.v3-table table {
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.v3-table th,
+.v3-table td {
+  border-color: var(--v3-table-border-color);
+  border-style: solid;
+  border-top-width: 0;
+  border-left-width: 0;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+  line-height: var(--v3-table-line-height);
+  padding: var(--v3-table-cell-padding);
+}
+
+.v3-table th:last-child,
+.v3-table td:last-child {
+  border-right-width: 1px;
+}
+
+.v3-table th.checkbox > div,
+.v3-table td.checkbox > div {
+  justify-content: center;
+}
+
+.v3-table th > div,
+.v3-table td > div {
+  display: flex;
+  align-content: center;
+  padding: var(--v3-table-cell-box-padding);
+}
+
 
 /*
  * Main Container
@@ -468,6 +563,39 @@ onMounted(() => {
   position: sticky;
   top: 0;
   z-index: 3;
+}
+
+.v3-table .v3-table-header-toolbar {
+  background: var(--v3-table-header-toolbar-bg);
+  border-style: solid;
+  border-width: 0 0 1px 0;
+  border-color: var(--v3-table-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--v3-table-header-toolbar-font-size);
+  padding: var(--v3-table-header-toolbar-padding);
+  position: relative;
+  z-index: 2;
+}
+
+v3-table-header-toolbar-checkbox-status {
+}
+
+.v3-table .v3-table-header-toolbar-filter {
+  position: relative;
+}
+
+.v3-table .v3-table-header-toolbar-filter .filters {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+}
+
+.v3-table .v3-table-header table {
+  position: relative;
+  z-index: 1;
 }
 
 .v3-table .v3-table-header th {
@@ -619,6 +747,7 @@ onMounted(() => {
 
 .v3-table select {
   border: 1px solid var(--v3-table-border-color);
+  border-radius: var(--v3-table-select-border-radius);
   color: inherit;
   display: block;
   font-size: inherit;
@@ -627,39 +756,16 @@ onMounted(() => {
   width: 100%;
 }
 
-.v3-table table {
-  border-collapse: separate;
-  border-spacing: 0;
-  table-layout: fixed;
-  width: 100%;
-}
-
-.v3-table th,
-.v3-table td {
-  border-color: var(--v3-table-border-color);
-  border-style: solid;
-  border-top-width: 0;
-  border-left-width: 0;
-  border-bottom-width: 1px;
-  border-right-width: 1px;
-  line-height: var(--v3-table-line-height);
-  padding: var(--v3-table-cell-padding);
-}
-
-.v3-table th:last-child,
-.v3-table td:last-child {
-  border-right-width: 1px;
-}
-
-.v3-table th.checkbox > div,
-.v3-table td.checkbox > div {
-  justify-content: center;
-}
-
-.v3-table th > div,
-.v3-table td > div {
-  display: flex;
-  align-content: center;
-  padding: var(--v3-table-cell-box-padding);
+.v3-table button {
+  background: var(--v3-table-button-bg);
+  border: 1px solid var(--v3-table-border-color);
+  color: inherit;
+  cursor: pointer;
+  display: block;
+  outline: none;
+  border-radius: var(--v3-table-button-border-radius);
+  font-size: var(--v3-table-button-font-size);
+  min-width: var(--v3-table-button-min-width);
+  padding: var(--v3-table-button-padding);
 }
 </style>

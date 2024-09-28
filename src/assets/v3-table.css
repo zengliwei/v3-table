@@ -6,9 +6,18 @@
     --v3-table-border-color: #DCDFE6;
     --v3-table-line-height: 1.5rem;
     --v3-table-link-color: #007bff;
+    --v3-table-button-bg: #fff;
+    --v3-table-button-border-radius: 3px;
+    --v3-table-button-font-size: .875rem;
+    --v3-table-button-min-width: 3rem;
+    --v3-table-button-padding: calc((var(--v3-table-line-height) - var(--v3-table-body-font-size) - 2px) / 2) 1rem;
+    --v3-table-select-border-radius: 3px;
     --v3-table-select-padding: calc((var(--v3-table-line-height) - var(--v3-table-body-font-size) - 2px) / 2) .5rem;
     --v3-table-text-color: #545454;
 
+    --v3-table-header-toolbar-bg: linear-gradient(#f4f5f8, #f1f3f6);
+    --v3-table-header-toolbar-font-size: .75rem;
+    --v3-table-header-toolbar-padding: .5rem .75rem;
     --v3-table-header-lv1-bg: linear-gradient(#f4f5f8, #f1f3f6);
     --v3-table-header-lv2-bg: linear-gradient(#f4f5f8, #f1f3f6);
     --v3-table-header-color: #545454;
@@ -30,7 +39,7 @@
     --v3-table-row-activated-bg: #e3f2fd;
 
     --v3-table-footer-bg: #f4f5f8;
-    --v3-table-footer-padding: .5rem 1rem;
+    --v3-table-footer-padding: .5rem .75rem;
     --v3-table-footer-font-size: .75rem;
 
     --v3-table-paginator-gap: .5rem;
