@@ -15,11 +15,18 @@ let filterTypes = {
 let columns = [
   {type: 'checkbox'},
   {type: 'index'},
-  {field: 'name', title: 'Name', width: 100, sort: true, fixed: 'left', filter: {type: 'text'}},
-  {field: 'age', title: 'Age', width: 100, align: 'right', sort: true, filter: {type: 'text'}},
-  {field: 'gender', title: 'Gender', width: 100, sort: true, filter: {type: 'select', opts: genderOpts}},
+  {field: 'name', title: 'Name', width: 220, sort: true, fixed: 'left', filter: {type: 'text'}},
+  {field: 'age', title: 'Age', width: 100, align: 'center', sort: true, filter: {type: 'text'}},
+  {
+    field: 'gender',
+    title: 'Gender',
+    width: 100,
+    align: 'center',
+    sort: true,
+    filter: {type: 'select', opts: genderOpts}
+  },
   {field: 'mobile', title: 'Mobile', width: 160, sort: true, filter: {type: 'text'}},
-  {field: 'email', title: 'E-mail', width: 180, sort: true, filter: {type: 'text'}}
+  {field: 'email', title: 'E-mail', width: 260, sort: true, filter: {type: 'text'}}
 ];
 
 let data = [
@@ -333,7 +340,8 @@ const rowDbClick = (row) => {
   <v3-table :columns="columns"
             :filter-types="filterTypes"
             :data="data"
-            height="calc(100vh - 10rem)"
+            :page-size="20"
+            height="calc(100vh - 8rem)"
             @row-click="rowClick"
             @row-db-click="rowDbClick"/>
 </template>

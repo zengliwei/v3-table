@@ -1,5 +1,5 @@
 <script setup>
-import {defineEmits, defineProps, defineComponent, ref, reactive, computed, watch, onMounted} from 'vue';
+import {defineEmits, defineProps, defineComponent, ref, computed, watch, onMounted} from 'vue';
 import v3TableTr from './v3-table-tr.vue';
 
 defineEmits(['row-click', 'row-db-click']);
@@ -95,28 +95,30 @@ for (let key in props.filterTypes) {
   defineComponent(props.filterTypes[key]);
 }
 
-let cols = reactive([]),
-    rows = reactive([]),
-    filteredRows = reactive([]),
-    sourceRows = reactive([]),
-    activatedRows = reactive([]),
-    filters = reactive([]),
-    showAutoWidthCol = false,
-    lastLeftFixedColIdx = -1,
+let cols = ref([]),
+    rows = ref([]),
+    filteredRows = [],
+    sourceRows = [],
+    activatedRows = ref([]),
+    filters = ref([]),
+    showAutoWidthCol = ref(false),
+    lastLeftFixedColIdx = ref(-1),
     rowTotal = 0,
-    page = 1,
-    pageCount = 1,
+    page = ref(1),
+    pageCount = computed(() => {
+      return Math.ceil(rowTotal / props.pageSize);
+    }),
     pages = computed(() => {
       let tmpPages = [];
-      for (let p = 1; p <= pageCount; p++) {
+      for (let p = 1; p <= pageCount.value; p++) {
         tmpPages.push(p);
       }
       return tmpPages;
     }),
     pagingMsg = computed(() => {
       return props.pagingMsg
-          .replace(':page_count', pageCount)
-          .replace(':page', page)
+          .replace(':page_count', pageCount.value)
+          .replace(':page', page.value)
           .replace(':row_total', rowTotal);
     }),
     sortOrders = [];
@@ -143,7 +145,7 @@ watch(
           break;
         }
       }
-      lastLeftFixedColIdx = tmpLastLeftFixedColIdx;
+      lastLeftFixedColIdx.value = tmpLastLeftFixedColIdx;
 
       if (tmpLastLeftFixedColIdx !== -1) {
         for (let c = 0; c < columns.length; c++) {
@@ -184,7 +186,7 @@ watch(
       let tmpCols = [];
       columns.forEach((col, c) => {
         if (col['width']) {
-          showAutoWidthCol = true;
+          showAutoWidthCol.value = true;
         }
         tmpCols.push({
           type: col['type'] || 'data',
@@ -214,7 +216,7 @@ watch(
         });
       });
 
-      cols = reactive(tmpCols);
+      cols = ref(tmpCols);
     },
     {immediate: true}
 );
@@ -240,8 +242,9 @@ const filterByLocal = function () {
       return true;
     });
   });
-  updateData(filteredRows.slice(0, props.pageSize), filteredRows.length);
-  page = 1;
+  rows.value = filteredRows.slice(0, props.pageSize);
+  rowTotal = filteredRows.length;
+  page.value = 1;
 };
 
 const refreshByRemote = function () {
@@ -273,7 +276,7 @@ const sortByLocal = function () {
     }
     return 0;
   });
-  updateData(filteredRows.slice(0, props.pageSize), filteredRows.length);
+  rows.value = filteredRows.slice((page.value - 1) * props.pageSize, page.value * props.pageSize);
 };
 
 const sortByRemote = function () {
@@ -292,21 +295,16 @@ const sort = function (col) {
   col['sortDir'] = sortOrders[0].dir;
   col['cssClass']['asc'] = col['sortDir'] === 'asc';
   col['cssClass']['desc'] = col['sortDir'] === 'desc';
+  props.srcHandler ? sortByRemote() : sortByLocal();
 };
 
-const updateData = function (data, total) {
-  rows = data;
-  rowTotal = total || data.length;
-  pageCount = Math.ceil(total / props.pageSize);
-};
-
-const updatePage = function (p) {
-  if (p < 1 || p > pageCount) return;
+const switchPage = function (p) {
+  if (p < 1 || p > pageCount.value) return;
   if (props.srcHandler) {
     refreshByRemote();
   } else {
-    page = p;
-    updateData(filteredRows.slice((page - 1) * props.pageSize, page * props.pageSize), filteredRows.length);
+    page.value = p;
+    rows.value = filteredRows.slice((page.value - 1) * props.pageSize, page.value * props.pageSize);
   }
 };
 
@@ -314,7 +312,10 @@ if (props.autoLoad) {
   if (props.srcUrl) {
     refreshByRemote();
   } else {
-    updateData(props.data, props.data.length);
+    sourceRows = props.data;
+    filteredRows = props.data;
+    rows.value = filteredRows.slice((page.value - 1) * props.pageSize, page.value * props.pageSize);
+    rowTotal = filteredRows.length;
   }
 }
 
@@ -401,13 +402,13 @@ onMounted(() => {
       <div class="paginator">
         <a href="#" :class="{disabled: page === 1}"
            v-text="props.labelPrevPage"
-           @click.prevent="updatePage(page - 1)"></a>
-        <select @change="(evt) => updatePage(evt.currentTarget.value)">
+           @click.prevent="switchPage(page - 1)"></a>
+        <select @change="(evt) => switchPage(evt.currentTarget.value)">
           <option v-for="p in pages" :value="p" v-text="p"></option>
         </select>
         <a href="#" :class="{disabled: page === pageCount}"
            v-text="props.labelNextPage"
-           @click.prevent="updatePage(page + 1)"></a>
+           @click.prevent="switchPage(page + 1)"></a>
       </div>
     </div>
   </div>
@@ -415,52 +416,10 @@ onMounted(() => {
 
 <style>
 .v3-table {
-  --v3-table-width: 100%;
-  --v3-table-border-color: #DCDFE6;
-  --v3-table-line-height: 1.5rem;
-
-  --v3-table-header-lv1-bg: linear-gradient(#f4f5f8, #f1f3f6);
-  --v3-table-header-lv2-bg: linear-gradient(#f4f5f8, #f1f3f6);
-  --v3-table-header-color: #545454;
-  --v3-table-header-font-size: .875rem;
-  --v3-table-header-font-weight: 400;
-  --v3-table-header-sort-icon: url('data:image/svg+xml;utf8,<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrows-up-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 3l0 18" /><path d="M10 6l-3 -3l-3 3" /><path d="M20 18l-3 3l-3 -3" /><path d="M17 21l0 -18" /></svg>');
-  --v3-table-header-sort-asc-icon: url('data:image/svg+xml;utf8,<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-up"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>');
-  --v3-table-header-sort-desc-icon: url('data:image/svg+xml;utf8,<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>');
-  --v3-table-header-sort-icon-height: .875rem;
-  --v3-table-header-sort-icon-width: .875rem;
-
-  --v3-table-body-color: #545454;
-  --v3-table-body-font-size: .875rem;
-  --v3-table-body-font-weight: 400;
-
-  --v3-table-row-bg: #fff;
-  --v3-table-row-even-bg: #f6f6f7;
-  --v3-table-row-hover-bg: #fff3e0;
-  --v3-table-row-activated-bg: #e3f2fd;
-
-  --v3-table-footer-bg: #f4f5f8;
-  --v3-table-footer-padding: .5rem 1rem;
-  --v3-table-footer-font-size: .75rem;
-
-  --v3-table-paginator-gap: .5rem;
-  --v3-table-paginator-disabled-color: #ccc;
-  --v3-table-paginator-select-padding: calc((var(--v3-table-line-height) - var(--v3-table-footer-font-size) - 2px) / 2) .5rem;
-
-  --v3-table-cell-padding: .3125rem;
-  --v3-table-cell-box-padding: 0 .3125rem;
-  --v3-table-cell-no-data-bg: #fff;
-  --v3-table-cell-no-data-padding: 1rem;
-
-  --v3-table-link-color: #007bff;
-  --v3-table-select-padding: calc((var(--v3-table-line-height) - var(--v3-table-body-font-size) - 2px) / 2) .5rem;
-}
-
-.v3-table {
   border-color: var(--v3-table-border-color);
   border-style: solid;
   border-width: 1px;
-  width: var(--v3-table-width);
+  width: var(100%);
 }
 
 .v3-table * {
@@ -503,7 +462,7 @@ onMounted(() => {
 }
 
 .v3-table .v3-table-header th.sort > div::after {
-  background: var(--v3-table-header-sort-icon) no-repeat center center;
+  background: var(--v3-table-header-sort-icon-url) no-repeat center center;
   background-size: var(--v3-table-header-sort-icon-width) var(--v3-table-header-sort-icon-height);
   content: '';
   display: block;
@@ -512,11 +471,11 @@ onMounted(() => {
 }
 
 .v3-table .v3-table-header th.sort.asc > div:after {
-  background-image: var(--v3-table-header-sort-asc-icon);
+  background-image: var(--v3-table-header-sort-asc-icon-url);
 }
 
 .v3-table .v3-table-header th.sort.desc > div:after {
-  background-image: var(--v3-table-header-sort-desc-icon);
+  background-image: var(--v3-table-header-sort-desc-icon-url);
 }
 
 .v3-table .v3-table-body {
@@ -592,8 +551,12 @@ onMounted(() => {
   gap: var(--v3-table-paginator-gap);
 }
 
-.v3-table .v3-table-footer .paginator .disabled {
-  color: var(--v3-table-paginator-disabled-color);
+.v3-table .v3-table-footer .paginator a {
+  color: var(--v3-table-paginator-link-color);
+}
+
+.v3-table .v3-table-footer .paginator a.disabled {
+  color: var(--v3-table-paginator-link-disabled-color);
   cursor: not-allowed;
 }
 
