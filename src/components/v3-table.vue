@@ -287,6 +287,20 @@ const getAllRows = function (rows) {
   return childRows;
 };
 
+const updateCheckAllStatus = function () {
+  let allChecked = true, hasChecked = false;
+  getAllRows(rows.value).forEach((r) => {
+    console.log(r['_checked_']);
+    if (!r['_checked_']) {
+      allChecked = false;
+    } else {
+      hasChecked = true;
+    }
+  });
+  elCheckAll.value[0].checked = allChecked;
+  elCheckAll.value[0].indeterminate = !allChecked && hasChecked;
+};
+
 const checkAll = function (status) {
   getAllRows(rows.value).forEach((row) => {
     row['_checked_'] = status;
@@ -299,15 +313,7 @@ const checkRow = function (row, status) {
   row['_checked_'] = status;
   status ? activatedRows.value.push(row)
       : activatedRows.value.splice(activatedRows.value.indexOf(row), 1);
-  let allChecked = true, hasChecked = false;
-  getAllRows(rows.value).forEach((r) => {
-    if (!r['_checked_']) {
-      allChecked = false;
-    } else {
-      hasChecked = true;
-    }
-  });
-  elCheckAll.value[0].indeterminate = !allChecked && hasChecked;
+  updateCheckAllStatus();
 };
 
 const clickRow = function (row) {
@@ -403,6 +409,7 @@ const switchPage = function (p) {
   } else {
     page.value = p;
     rows.value = filteredRows.slice((page.value - 1) * pageSize.value, page.value * pageSize.value);
+    updateCheckAllStatus();
   }
 };
 
@@ -410,6 +417,7 @@ const switchPageSize = function (size) {
   pageSize.value = parseInt(size);
   page.value = 1;
   rows.value = filteredRows.slice((page.value - 1) * pageSize.value, page.value * pageSize.value);
+  updateCheckAllStatus();
   emit('update:page-size', pageSize.value);
 };
 
