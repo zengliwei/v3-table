@@ -480,8 +480,8 @@ onMounted(() => {
                 <div v-text="col['title'] || '#'"></div>
               </th>
               <th v-if="col['type'] === 'actions'"
-                  class="index" :style="col['style']">
-                <div></div>
+                  class="actions" :style="col['style']">
+                <div v-text="col['title'] || ''"></div>
               </th>
               <th v-if="col['type'] === 'data' && !col['hidden']"
                   :class="col['cssClass']" :style="col['style']">
