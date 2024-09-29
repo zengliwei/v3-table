@@ -1,6 +1,11 @@
 <script>
 import {reactive} from 'vue';
 
+/*
+ * In case we need to handle expanded state of all instances of the component,
+ * a global variable is needed.
+ * So we have to use <scrip> with an export method instead of <script setup>.
+ */
 const globalInstances = reactive([]);
 
 export default {
