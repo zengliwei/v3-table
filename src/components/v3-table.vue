@@ -709,6 +709,7 @@ onMounted(() => {
   border-radius: var(--v3-table-button-border-radius);
   display: none;
   min-width: var(--v3-table-actions-dropdown-min-width);
+  overflow: hidden;
   position: absolute;
   z-index: var(--v3-table-actions-dropdown-z-index);
 }
@@ -725,6 +726,10 @@ onMounted(() => {
   display: block;
   font-size: var(--v3-table-actions-dropdown-action-font-size);
   padding: var(--v3-table-actions-dropdown-action-padding);
+}
+
+.v3-table-actions-dropdown-action:last-child {
+  border-bottom: 0;
 }
 
 .v3-table-actions-dropdown-action:hover {

@@ -58,8 +58,8 @@ export default {
           ? `${rectBox.x}px`
           : `${rectBox.x + rectBox.width - rectDropdown.width}px`;
       this.dropdownStyle.top = window.innerHeight - (rectBox.y + rectDropdown.height) > 0
-          ? `${rectBox.y + rectBox.height}px`
-          : `${rectBox.y - rectDropdown.height}px`;
+          ? `${rectBox.y + rectBox.height + 1}px`
+          : `${rectBox.y - rectDropdown.height - 1}px`;
     },
 
     close: function () {

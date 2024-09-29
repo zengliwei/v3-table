@@ -57,8 +57,9 @@ const rebuildActions = function (actions, row) {
   return actions.map((action) => {
     return {
       label: action['label'],
-      canShow: action['canShow'] ? () => action['canShow'](row) : undefined,
-      handle: () => action['handle'](row)
+      canShow: action['canShow'],
+      handle: action['handle'],
+      params: [row]
     };
   });
 };
