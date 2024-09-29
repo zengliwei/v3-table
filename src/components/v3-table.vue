@@ -16,11 +16,6 @@ const props = defineProps({
     required: true
   },
 
-  rowActions: {
-    type: Array,
-    default: () => []
-  },
-
   showToolbar: {
     type: Boolean,
     default: true
@@ -253,6 +248,7 @@ watch(
           renderer: col['renderer'] || false,
           filter: col['filter'] || false,
           expandable: col['expandable'] || false,
+          actions: col['actions'] || false,
           cssClass: {
             'data': col['type'] === 'data' || col['type'] === undefined,
             'align-center': col['align'] === 'center',
@@ -483,18 +479,22 @@ onMounted(() => {
                   class="index" :style="col['style']">
                 <div v-text="col['title'] || '#'"></div>
               </th>
+              <th v-if="col['type'] === 'actions'"
+                  class="index" :style="col['style']">
+                <div></div>
+              </th>
               <th v-if="col['type'] === 'data' && !col['hidden']"
                   :class="col['cssClass']" :style="col['style']">
                 <div @click="sort(col)"><span v-text="col['title']"></span></div>
               </th>
             </template>
             <th v-if="showAutoWidthCol" class="auto"></th>
-            <th v-if="rowActions.length > 0" class="actions"></th>
           </tr>
           <tr v-if="showColumnFilter">
             <template v-for="(col, c) in cols">
               <th v-if="col['type'] === 'checkbox'" class="checkbox" :style="col['style']"></th>
               <th v-if="col['type'] === 'index'" class="index" :style="col['style']"></th>
+              <th v-if="col['type'] === 'actions'" class="actions" :style="col['style']"></th>
               <th v-if="col['type'] === 'data' && !col['hidden']" :style="col['style']">
                 <component
                     v-if="col['filter']"
@@ -503,7 +503,6 @@ onMounted(() => {
               </th>
             </template>
             <th v-if="showAutoWidthCol" class="auto"></th>
-            <th v-if="rowActions.length > 0" class="actions"></th>
           </tr>
           </thead>
         </table>
@@ -518,7 +517,6 @@ onMounted(() => {
                   :idx="r"
                   :row="row"
                   :cols="cols"
-                  :row-actions="rowActions"
                   :show-auto-width-col="showAutoWidthCol"
                   :tip-empty-value="tipEmptyValue"
                   :last-left-fixed-col-idx="lastLeftFixedColIdx"

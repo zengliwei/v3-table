@@ -23,11 +23,6 @@ const props = defineProps({
     required: true
   },
 
-  rowActions: {
-    type: Array,
-    default: () => []
-  },
-
   showAutoWidthCol: {
     type: Boolean,
     default: false
@@ -54,17 +49,18 @@ const props = defineProps({
   }
 });
 
-const rowActions = ref(props.rowActions.map((action) => {
-  return {
-    canShow: action['canShow'],
-    label: action['label'],
-    handle: action['handle'],
-    params: [props.row]
-  };
-}));
-
 const check = function (status) {
   emit('check', props.row, status);
+};
+
+const rebuildActions = function (actions, row) {
+  return actions.map((action) => {
+    return {
+      label: action['label'],
+      canShow: action['canShow'] ? () => action['canShow'](row) : undefined,
+      handle: () => action['handle'](row)
+    };
+  });
 };
 </script>
 
@@ -84,6 +80,11 @@ const check = function (status) {
       <td v-if="col['type'] === 'index'" class="index" :style="col.style">
         <div v-text="(idx + 1) || ''"></div>
       </td>
+      <td v-if="col['type'] === 'actions'" class="actions" :style="col.style">
+        <div>
+          <v3-table-actions :actions="rebuildActions(col['actions'], row)"/>
+        </div>
+      </td>
       <v3-table-td
           ref="td"
           :col="col"
@@ -98,18 +99,12 @@ const check = function (status) {
           @mouseleave="$emit('cell-mouseleave', row, col)"/>
     </template>
     <td v-if="showAutoWidthCol"></td>
-    <td v-if="rowActions.length > 0" class="actions">
-      <div>
-        <v3-table-actions :actions="rowActions"/>
-      </div>
-    </td>
   </tr>
   <template v-if="row['children'] && row['_expanded_']">
     <v3-table-tr
         v-for="child in row['children']"
         :row="child"
         :cols="cols"
-        :row-actions="rowActions"
         :show-auto-width-col="showAutoWidthCol"
         :tip-empty-value="tipEmptyValue"
         :last-left-fixed-col-idx="lastLeftFixedColIdx"

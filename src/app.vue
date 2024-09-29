@@ -27,7 +27,15 @@ let columns = [
     filter: {type: 'select', opts: genderOpts}
   },
   {field: 'mobile', title: 'Mobile', width: 160, sort: true, filter: {type: 'text'}},
-  {field: 'email', title: 'E-mail', width: 260, sort: true, filter: {type: 'text'}}
+  {field: 'email', title: 'E-mail', width: 260, sort: true, filter: {type: 'text'}},
+  {
+    type: 'actions',
+    width: 100,
+    actions: [
+      {label: 'Edit', handle: (row) => console.log('Edit', row)},
+      {label: 'Delete', handle: (row) => console.log('Delete', row)}
+    ]
+  }
 ];
 
 let data = [
@@ -341,10 +349,6 @@ let data = [
       :toolbar-actions="[
         {label: 'Add', handle: (activatedRows) => console.log('Add', activatedRows)},
         {label: 'Delete', handle: (activatedRows) => console.log('Delete', activatedRows)}
-      ]"
-      :row-actions="[
-        {label: 'Edit', handle: (row) => console.log('Edit', row)},
-        {label: 'Delete', handle: (row) => console.log('Delete', row)}
       ]"
       height="calc(100vh - 10rem)"/>
 </template>
