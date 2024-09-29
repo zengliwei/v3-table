@@ -849,12 +849,6 @@ onMounted(() => {
 
 .v3-table .v3-table-header th.actions,
 .v3-table .v3-table-body td.actions {
-  border-color: var(--v3-table-border-color);
-  border-style: solid;
-  border-width: 0 0 1px 1px;
-  overflow: unset;
-  position: sticky;
-  right: 0;
   width: var(--v3-table-header-actions-width);
 }
 
@@ -900,7 +894,8 @@ onMounted(() => {
 }
 
 .v3-table .v3-table-body td.actions > div {
-  font-size: var(--v3-table-header-actions-font-size);
+  font-size: var(--v3-table-row-actions-font-size);
+  line-height: var(--v3-table-row-actions-line-height);
 }
 
 .v3-table .v3-table-body td.no-data {

@@ -57,6 +57,8 @@
     --v3-table-row-even-bg: #f6f6f7;
     --v3-table-row-hover-bg: #fff3e0;
     --v3-table-row-activated-bg: #e3f2fd;
+    --v3-table-row-actions-font-size: .75rem;
+    --v3-table-row-actions-line-height: 1rem;
 
     --v3-table-footer-bg: #f4f5f8;
     --v3-table-footer-padding: .5rem .75rem;
