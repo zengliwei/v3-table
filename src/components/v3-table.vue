@@ -440,8 +440,8 @@ onMounted(() => {
           <div class="v3-table-header-toolbar-left">
             <div class="v3-table-header-toolbar-actions">
               <v3-table-actions :actions="toolbarActions"/>
+              <div v-if="hasCheckbox" class="v3-table-header-checked-status" v-text="tipCheckedStatus"></div>
             </div>
-            <div v-if="hasCheckbox" class="v3-table-header-checked-status" v-text="tipCheckedStatus"></div>
             <div>
               <slot name="toolbar-left"></slot>
             </div>
@@ -667,7 +667,7 @@ onMounted(() => {
   border-bottom-right-radius: 0;
 }
 
-.v3-table .v3-table-action-expander {
+.v3-table .v3-table-actions-expander {
   background: var(--v3-table-button-bg);
   border-color: var(--v3-table-border-color);
   border-style: solid;
@@ -676,43 +676,44 @@ onMounted(() => {
   border-bottom-right-radius: var(--v3-table-button-border-radius);
   cursor: pointer;
   display: block;
-  padding: var(--v3-table-action-expander-padding);
+  padding: var(--v3-table-actions-expander-padding);
 }
 
-.v3-table .v3-table-action-expander::after {
-  background: var(--v3-table-action-expander-icon-url) no-repeat center center;
-  background-size: var(--v3-table-action-expander-icon-width) var(--v3-table-action-expander-icon-height);
+.v3-table .v3-table-actions-expander::after {
+  background: var(--v3-table-actions-expander-icon-url) no-repeat center center;
+  background-size: var(--v3-table-actions-expander-icon-width) var(--v3-table-actions-expander-icon-height);
   content: '';
   display: block;
-  height: var(--v3-table-action-expander-icon-height);
-  width: var(--v3-table-action-expander-icon-width);
+  height: var(--v3-table-actions-expander-icon-height);
+  width: var(--v3-table-actions-expander-icon-width);
 }
 
-.v3-table .v3-table-action-expander.expanded::after {
-  background-image: var(--v3-table-action-expander-expanded-icon-url);
-}
-
-.v3-table .v3-table-actions-dropdown {
-  background: var(--v3-table-button-bg);
+.v3-table-actions-dropdown {
+  background: var(--v3-table-actions-dropdown-bg);
   border: 1px solid var(--v3-table-border-color);
   border-radius: var(--v3-table-button-border-radius);
   display: none;
   min-width: var(--v3-table-actions-dropdown-min-width);
   position: absolute;
-  top: 100%;
+  z-index: var(--v3-table-actions-dropdown-z-index);
 }
 
-.v3-table .v3-table-actions-dropdown.expanded {
+.v3-table-actions-dropdown.expanded {
   display: block;
 }
 
-.v3-table .v3-table-action {
-  background: var(--v3-table-button-bg);
+.v3-table-actions-dropdown-action {
+  background: var(--v3-table-actions-dropdown-action-bg);
   border-bottom: 1px solid var(--v3-table-border-color);
   color: var(--v3-table-button-color);
   cursor: pointer;
   display: block;
-  padding: var(--v3-table-button-padding);
+  font-size: var(--v3-table-actions-dropdown-action-font-size);
+  padding: var(--v3-table-actions-dropdown-action-padding);
+}
+
+.v3-table-actions-dropdown-action:hover {
+  background: var(--v3-table-actions-dropdown-action-hover-bg);
 }
 
 .v3-table .v3-table-action:hover {
@@ -763,6 +764,12 @@ onMounted(() => {
   align-items: center;
   gap: var(--v3-table-header-toolbar-gap);
   position: relative;
+}
+
+.v3-table-header-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--v3-table-header-toolbar-actions-gap);
 }
 
 .v3-table .v3-table-header-checked-status {
