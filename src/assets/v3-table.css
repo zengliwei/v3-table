@@ -29,11 +29,12 @@
     --v3-table-actions-dropdown-action-padding: .3125rem .5rem;
     --v3-table-actions-dropdown-action-hover-bg: #f8f9fa;
 
-    --v3-table-header-toolbar-bg: linear-gradient(#f4f5f8, #f1f3f6);
-    --v3-table-header-toolbar-font-size: .75rem;
-    --v3-table-header-toolbar-padding: .5rem .75rem;
-    --v3-table-header-toolbar-gap: 2rem;
-    --v3-table-header-toolbar-actions-gap: 1rem;
+    --v3-table-toolbar-bg: linear-gradient(#f4f5f8, #f1f3f6);
+    --v3-table-toolbar-font-size: .75rem;
+    --v3-table-toolbar-padding: .5rem .75rem;
+    --v3-table-toolbar-gap: 2rem;
+    --v3-table-toolbar-actions-gap: 1rem;
+
     --v3-table-header-checked-status-color: #999;
     --v3-table-header-lv1-bg: linear-gradient(#f4f5f8, #f1f3f6);
     --v3-table-header-lv2-bg: linear-gradient(#f4f5f8, #f1f3f6);

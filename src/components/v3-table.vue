@@ -165,6 +165,7 @@ let cols = ref([]),
     sortOrders = [];
 
 const elMain = ref(),
+    elToolbar = ref(),
     elHeader = ref(),
     elBody = ref(),
     elFooter = ref(),
@@ -210,7 +211,8 @@ watch(
       let leftFixedColLeftArr = [];
       for (let c = 0; c < columns.length; c++) {
         if (columns[c]['fixed'] === 'left') {
-          leftFixedColLeftArr[c] += leftFixedColLeftArr[c - 1] || 0;
+          leftFixedColLeftArr[c] = leftFixedColLeftArr[c - 1] !== undefined
+              ? (leftFixedColLeftArr[c - 1] + columns[c - 1]['width']) : 0;
         } else {
           break;
         }
@@ -427,6 +429,7 @@ if (props.autoLoad) {
 onMounted(() => {
   if (props.height) {
     elMain.value.style.height = `calc(100% - ${elFooter.value.offsetHeight}px)`;
+    elHeader.value.style.top = `${elToolbar.value.offsetHeight}px`;
   }
 });
 </script>
@@ -434,23 +437,23 @@ onMounted(() => {
 <template>
   <div class="v3-table" :style="{height: height}" ref="elTable">
     <div class="v3-table-main" ref="elMain">
-      <div class="v3-table-header" ref="elHeader">
 
-        <div v-if="showToolbar" class="v3-table-header-toolbar">
-          <div class="v3-table-header-toolbar-left">
-            <div class="v3-table-header-toolbar-actions">
-              <v3-table-actions :actions="toolbarActions"/>
-              <div v-if="hasCheckbox" class="v3-table-header-checked-status" v-text="tipCheckedStatus"></div>
-            </div>
-            <div>
-              <slot name="toolbar-left"></slot>
-            </div>
+      <div v-if="showToolbar" class="v3-table-toolbar" ref="elToolbar">
+        <div class="v3-table-toolbar-left">
+          <div class="v3-table-toolbar-actions">
+            <v3-table-actions :actions="toolbarActions"/>
+            <div v-if="hasCheckbox" class="v3-table-header-checked-status" v-text="tipCheckedStatus"></div>
           </div>
-          <div class="v3-table-header-toolbar-right">
-            <slot name="toolbar-right"></slot>
+          <div>
+            <slot name="toolbar-left"></slot>
           </div>
         </div>
+        <div class="v3-table-toolbar-right">
+          <slot name="toolbar-right"></slot>
+        </div>
+      </div>
 
+      <div class="v3-table-header" ref="elHeader">
         <table>
           <thead>
           <tr>
@@ -476,9 +479,9 @@ onMounted(() => {
           </tr>
           <tr v-if="showColumnFilter">
             <template v-for="(col, c) in cols">
-              <th v-if="col['type'] === 'checkbox'" class="checkbox"></th>
-              <th v-if="col['type'] === 'index'" class="index"></th>
-              <th v-if="col['type'] === 'data' && !col['hidden']">
+              <th v-if="col['type'] === 'checkbox'" class="checkbox" :style="col['style']"></th>
+              <th v-if="col['type'] === 'index'" class="index" :style="col['style']"></th>
+              <th v-if="col['type'] === 'data' && !col['hidden']" :style="col['style']">
                 <component
                     v-if="col['filter']"
                     :is="col['filter']['type']"
@@ -736,6 +739,34 @@ onMounted(() => {
 
 
 /*
+ * Toolbar
+ */
+
+.v3-table .v3-table-toolbar {
+  background: var(--v3-table-toolbar-bg);
+  border-style: solid;
+  border-width: 0 0 1px 0;
+  border-color: var(--v3-table-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--v3-table-toolbar-font-size);
+  padding: var(--v3-table-toolbar-padding);
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 3;
+}
+
+.v3-table .v3-table-toolbar > div {
+  display: flex;
+  align-items: center;
+  gap: var(--v3-table-toolbar-gap);
+  position: relative;
+}
+
+
+/*
  * Header
  */
 
@@ -745,31 +776,10 @@ onMounted(() => {
   z-index: 3;
 }
 
-.v3-table .v3-table-header-toolbar {
-  background: var(--v3-table-header-toolbar-bg);
-  border-style: solid;
-  border-width: 0 0 1px 0;
-  border-color: var(--v3-table-border-color);
+.v3-table-toolbar-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: var(--v3-table-header-toolbar-font-size);
-  padding: var(--v3-table-header-toolbar-padding);
-  position: relative;
-  z-index: 2;
-}
-
-.v3-table .v3-table-header-toolbar > div {
-  display: flex;
-  align-items: center;
-  gap: var(--v3-table-header-toolbar-gap);
-  position: relative;
-}
-
-.v3-table-header-toolbar-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--v3-table-header-toolbar-actions-gap);
+  gap: var(--v3-table-toolbar-actions-gap);
 }
 
 .v3-table .v3-table-header-checked-status {
@@ -831,19 +841,19 @@ onMounted(() => {
   z-index: 1;
 }
 
-.v3-table .v3-table-body tr {
+.v3-table .v3-table-body tr td {
   background-color: var(--v3-table-row-bg);
 }
 
-.v3-table .v3-table-body tr:nth-child(even) {
+.v3-table .v3-table-body tr:nth-child(even) td {
   background-color: var(--v3-table-row-even-bg);
 }
 
-.v3-table .v3-table-body tr:hover {
+.v3-table .v3-table-body tr:hover td {
   background-color: var(--v3-table-row-hover-bg);
 }
 
-.v3-table .v3-table-body tr.activated {
+.v3-table .v3-table-body tr.activated td {
   background-color: var(--v3-table-row-activated-bg);
 }
 

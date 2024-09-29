@@ -103,6 +103,3 @@ const check = function (status) {
         @cell-mouseleave="(obj, col) => $emit('cell-mouseleave', obj, col)"/>
   </template>
 </template>
-
-<style scoped>
-</style>
