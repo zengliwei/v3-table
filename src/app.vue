@@ -23,6 +23,7 @@ let columns = [
     width: 100,
     align: 'center',
     sort: true,
+    renderer: (row, col) => genderOpts.find(opt => opt.value === row[col['field']]).label,
     filter: {type: 'select', opts: genderOpts}
   },
   {field: 'mobile', title: 'Mobile', width: 160, sort: true, filter: {type: 'text'}},
@@ -341,6 +342,10 @@ let data = [
         {label: 'Add', handle: (activatedRows) => console.log('Add', activatedRows)},
         {label: 'Edit', handle: (activatedRows) => console.log('Edit', activatedRows)},
         {label: 'Delete', handle: (activatedRows) => console.log('Delete', activatedRows)}
+      ]"
+      :row-actions="[
+        {label: 'Edit', handle: (row) => console.log('Edit', row)},
+        {label: 'Delete', handle: (row) => console.log('Delete', row)}
       ]"
       height="calc(100vh - 10rem)"/>
 </template>

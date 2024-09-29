@@ -2,6 +2,7 @@
 import {defineEmits, defineProps, defineComponent, defineExpose, ref, computed, watch, onMounted} from 'vue';
 import v3TableTr from './v3-table-tr.vue';
 import V3TableActions from "./v3-table-actions.vue";
+import V3TableTd from "./v3-table-td.vue";
 
 const emit = defineEmits([
   'row-click', 'row-dblclick', 'row-mouseenter', 'row-mouseleave',
@@ -103,6 +104,11 @@ const props = defineProps({
   tipNoData: {
     type: String,
     default: 'No data'
+  },
+
+  tipEmptyValue: {
+    type: String,
+    default: '-'
   },
 
   labelToolbarFilter: {
@@ -244,6 +250,7 @@ watch(
           width: col['width'] || false,
           sort: col['sort'] || false,
           sortDir: col['sortDir'] || false,
+          renderer: col['renderer'] || false,
           filter: col['filter'] || false,
           expandable: col['expandable'] || false,
           cssClass: {
@@ -351,6 +358,7 @@ const filter = function () {
 };
 
 const refreshByRemote = function () {
+  //props.srcHandler
   fetch(props.srcUrl, {
     method: props.srcMethod,
     params: {
@@ -465,8 +473,7 @@ onMounted(() => {
           <thead>
           <tr>
             <template v-for="(col, c) in cols">
-              <th v-if="col['type'] === 'checkbox'"
-                  class="checkbox" :style="col['style']">
+              <th v-if="col['type'] === 'checkbox'" class="checkbox" :style="col['style']">
                 <div>
                   <input ref="elCheckAll" type="checkbox"
                          @click="evt => checkAll(evt.currentTarget.checked)"/>
@@ -495,8 +502,8 @@ onMounted(() => {
                     :params="col['filter']['params']"></component>
               </th>
             </template>
-            <th v-if="showAutoWidthCol"></th>
-            <th v-if="rowActions.length > 0"></th>
+            <th v-if="showAutoWidthCol" class="auto"></th>
+            <th v-if="rowActions.length > 0" class="actions"></th>
           </tr>
           </thead>
         </table>
@@ -513,6 +520,7 @@ onMounted(() => {
                   :cols="cols"
                   :row-actions="rowActions"
                   :show-auto-width-col="showAutoWidthCol"
+                  :tip-empty-value="tipEmptyValue"
                   :last-left-fixed-col-idx="lastLeftFixedColIdx"
                   :activated-rows="activatedRows"
                   @click="(obj) => clickRow(obj)"
@@ -772,6 +780,12 @@ onMounted(() => {
   position: relative;
 }
 
+.v3-table .v3-table-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--v3-table-toolbar-actions-gap);
+}
+
 
 /*
  * Header
@@ -781,12 +795,6 @@ onMounted(() => {
   position: sticky;
   top: 0;
   z-index: 3;
-}
-
-.v3-table-toolbar-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--v3-table-toolbar-actions-gap);
 }
 
 .v3-table .v3-table-header-checked-status {
@@ -839,6 +847,17 @@ onMounted(() => {
   background-image: var(--v3-table-header-sort-desc-icon-url);
 }
 
+.v3-table .v3-table-header th.actions,
+.v3-table .v3-table-body td.actions {
+  border-color: var(--v3-table-border-color);
+  border-style: solid;
+  border-width: 0 0 1px 1px;
+  overflow: unset;
+  position: sticky;
+  right: 0;
+  width: var(--v3-table-header-actions-width);
+}
+
 
 /*
  * Body
@@ -880,11 +899,8 @@ onMounted(() => {
   justify-content: flex-end;
 }
 
-.v3-table .v3-table-header th.actions,
-.v3-table .v3-table-body td.actions {
-  overflow: unset;
-  position: sticky;
-  right: 0;
+.v3-table .v3-table-body td.actions > div {
+  font-size: var(--v3-table-header-actions-font-size);
 }
 
 .v3-table .v3-table-body td.no-data {

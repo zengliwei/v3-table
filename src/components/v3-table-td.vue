@@ -22,6 +22,11 @@ const props = defineProps({
   level: {
     type: Number,
     default: 0
+  },
+
+  tipEmptyValue: {
+    type: String,
+    default: '-'
   }
 });
 
@@ -30,12 +35,39 @@ const renderContent = function (row, col) {
       ? col['renderer'](row, col)
       : row[col['code']];
   if ([undefined, null, ''].indexOf(html) > -1) {
-    html = '-';
+    html = props.tipEmptyValue;
   }
   return html;
 };
 
-const expand = function (row) {
+const renderExpandedRow = function (row) {
+  if (!row['children']) return;
+  row['children'].forEach(child => {
+    child['_hidden_'] = !row['_expanded_'];
+    renderExpandedRow(child);
+  });
+};
+
+const collapseRow = function (row) {
+  if (!row['children']) return;
+  row['children'].forEach(child => {
+    child['_hidden_'] = true;
+    collapseRow(child);
+  });
+};
+
+const expand = async function (row) {
+  row['_expanded_'] = !row['_expanded_'];
+  if (row['_expanded_']) {
+    if (!row['children'] && props.col['srcGetChildren'] instanceof Function) {
+      row['_loading_'] = true;
+      row['children'] = await props.col['srcGetChildren'](row);
+      row['_loading_'] = false;
+    }
+    renderExpandedRow(row);
+  } else {
+    collapseRow(row);
+  }
 }
 </script>
 

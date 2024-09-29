@@ -49,13 +49,13 @@ onMounted(() => {
     <template v-if="actions.length === 1">
       <a class="v3-table-action"
          v-text="actions[0]['label']"
-         @click.prevent="handleAction(actions[0])"></a>
+         @click.stop="handleAction(actions[0])"></a>
     </template>
     <template v-if="actions.length > 1">
       <div ref="elActionBox" class="v3-table-action-box">
         <a class="v3-table-main-action"
            v-text="actions[0]['label']"
-           @click.prevent="handleAction(actions[0])"></a>
+           @click.stop="handleAction(actions[0])"></a>
         <span class="v3-table-actions-expander"
               @click.stop="dropdown()"></span>
       </div>
@@ -67,7 +67,7 @@ onMounted(() => {
             <a v-if="a > 1"
                class="v3-table-actions-dropdown-action"
                v-text="action['label']"
-               @click.prevent="handleAction(action)"></a>
+               @click.stop="handleAction(action)"></a>
           </template>
         </div>
       </teleport>
