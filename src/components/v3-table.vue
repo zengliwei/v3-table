@@ -2,7 +2,6 @@
 import {defineEmits, defineProps, defineComponent, defineExpose, ref, computed, watch, onMounted} from 'vue';
 import v3TableTr from './v3-table-tr.vue';
 import V3TableActions from "./v3-table-actions.vue";
-import V3TableTd from "./v3-table-td.vue";
 
 const emit = defineEmits([
   'row-click', 'row-dblclick', 'row-mouseenter', 'row-mouseleave',

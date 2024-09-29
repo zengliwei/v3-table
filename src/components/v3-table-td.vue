@@ -1,5 +1,5 @@
 <script setup>
-import {defineProps, defineEmits, ref, watch} from 'vue';
+import {defineProps, defineEmits} from 'vue';
 
 defineEmits(['click', 'dblclick', 'mouseenter', 'mouseleave']);
 
