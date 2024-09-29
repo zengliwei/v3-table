@@ -290,7 +290,6 @@ const getAllRows = function (rows) {
 const updateCheckAllStatus = function () {
   let allChecked = true, hasChecked = false;
   getAllRows(rows.value).forEach((r) => {
-    console.log(r['_checked_']);
     if (!r['_checked_']) {
       allChecked = false;
     } else {
