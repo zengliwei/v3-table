@@ -1,7 +1,9 @@
 <script setup>
 import {defineEmits, defineProps, defineComponent, defineExpose, ref, computed, watch, onMounted} from 'vue';
 import v3TableTr from './v3-table-tr.vue';
-import V3TableActions from "./v3-table-actions.vue";
+import v3TableActions from './v3-table-actions.vue';
+import v3TableFilterSelect from './v3-table-filter-select.vue';
+import v3TableFilterText from './v3-table-filter-text.vue';
 
 const emit = defineEmits([
   'row-click', 'row-dblclick', 'row-mouseenter', 'row-mouseleave',
@@ -171,6 +173,25 @@ const elMain = ref(),
     elFooter = ref(),
     elCheckAll = ref();
 
+/*
+ * Generate a standard column setting with the `columns` parameters:
+ *
+ *       type - optional types are `checkbox`, `index`, `actions`, `data`
+ *       code - column name
+ *      field - field name or expression for data column
+ *     hidden - whether the column is hidden
+ *      title - column title
+ *      align - text align
+ *      width - column width with unit px
+ *      fixed - optional fixed positions are `left`, `right`
+ *     filter - filter settings
+ *       sort - whether the column is sortable
+ *        gbk - whether the column is sorted by gbk
+ *    sortDir - default sort direction
+ *   renderer - cell renderer
+ * expandable - whether the column shows expandable icon
+ *    actions - row actions
+ */
 watch(
     () => props.columns,
     (columns) => {
@@ -230,14 +251,24 @@ watch(
         }
       }
 
+      const rebuildFilterConfig = function (filter) {
+        const defaultFilters = {
+          'text': {type: 'v3-table-filter-text', op: 'like'},
+          'select': {type: 'v3-table-filter-select', op: '='},
+          'date': {type: 'v3-table-filter-date-range', op: 'date'}
+        };
+        let defaultFilter = defaultFilters[filter['type'] || 'text'];
+        filter['type'] = filter['type'] || 'text';
+        filter['op'] = filter['op'] || '=';
+        filter['params'] = filter['params'] || [];
+        return filter;
+      };
+
       let tmpCols = [];
       columns.forEach((col, c) => {
-        if (col['width']) {
-          showAutoWidthCol.value = true;
-        }
         tmpCols.push({
-          type: col['type'] || 'data',
           code: col['code'] || col['field'],
+          type: col['type'] || 'data',
           field: col['field'] || false,
           hidden: col['hidden'] || false,
           title: col['title'] || false,
@@ -245,7 +276,7 @@ watch(
           sort: col['sort'] || false,
           sortDir: col['sortDir'] || false,
           renderer: col['renderer'] || false,
-          filter: col['filter'] || false,
+          filter: col['filter'] ? rebuildFilterConfig(col['filter']) : false,
           expandable: col['expandable'] || false,
           actions: col['actions'] || false,
           cssClass: {
@@ -264,6 +295,9 @@ watch(
             width: col['width'] ? (col['width'] + 'px') : 'auto'
           }
         });
+        if (col['width']) {
+          showAutoWidthCol.value = true;
+        }
       });
 
       cols = ref(tmpCols);

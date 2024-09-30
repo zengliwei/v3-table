@@ -15,19 +15,27 @@ let filterTypes = {
 let columns = [
   {type: 'checkbox'},
   {type: 'index'},
-  {field: 'name', title: 'Name', width: 220, sort: true, expandable: true, fixed: 'left', filter: {type: 'text'}},
-  {field: 'age', title: 'Age', width: 100, align: 'center', sort: true, filter: {type: 'text'}},
   {
-    field: 'gender',
-    title: 'Gender',
-    width: 100,
-    align: 'center',
-    sort: true,
+    field: 'name', title: 'Name', width: 220, sort: true, expandable: true, fixed: 'left',
+    filter: {type: 'text', op: 'like'}
+  },
+  {
+    field: 'age', title: 'Age', width: 100, align: 'center', sort: true,
+    filter: {type: 'text', op: 'like'}
+  },
+  {
+    field: 'gender', title: 'Gender', width: 100, align: 'center', sort: true,
     renderer: (row, col) => genderOpts.find(opt => opt.value === row[col['field']]).label,
     filter: {type: 'select', opts: genderOpts}
   },
-  {field: 'mobile', title: 'Mobile', width: 160, sort: true, filter: {type: 'text'}},
-  {field: 'email', title: 'E-mail', width: 260, sort: true, filter: {type: 'text'}},
+  {
+    field: 'mobile', title: 'Mobile', width: 160, sort: true,
+    filter: {type: 'text', op: 'like'}
+  },
+  {
+    field: 'email', title: 'E-mail', width: 260, sort: true,
+    filter: {type: 'text', op: 'like'}
+  },
   {
     type: 'actions',
     width: 100,
