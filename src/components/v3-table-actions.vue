@@ -116,3 +116,87 @@ export default {
     </template>
   </div>
 </template>
+
+<style>
+.v3-table .v3-table-main-action {
+  background: var(--v3-table-button-bg);
+  border: 1px solid var(--v3-table-border-color);
+  border-radius: var(--v3-table-button-border-radius);
+  color: var(--v3-table-button-color);
+  cursor: pointer;
+  line-height: var(--v3-table-button-height);
+  height: calc(var(--v3-table-button-height) + 2px);
+  padding: var(--v3-table-button-padding);
+}
+
+.v3-table .v3-table-action-box {
+  display: flex;
+}
+
+.v3-table .v3-table-action-box .v3-table-main-action {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.v3-table .v3-table-actions-expander {
+  background: var(--v3-table-button-bg);
+  border-color: var(--v3-table-border-color);
+  border-style: solid;
+  border-width: 1px 1px 1px 0;
+  border-top-right-radius: var(--v3-table-button-border-radius);
+  border-bottom-right-radius: var(--v3-table-button-border-radius);
+  cursor: pointer;
+  display: block;
+  padding: var(--v3-table-actions-expander-padding);
+}
+
+.v3-table .v3-table-actions-expander::after {
+  background: var(--v3-table-actions-expander-icon-url) no-repeat center center;
+  background-size: var(--v3-table-actions-expander-icon-width) var(--v3-table-actions-expander-icon-height);
+  content: '';
+  display: block;
+  height: var(--v3-table-actions-expander-icon-height);
+  width: var(--v3-table-actions-expander-icon-width);
+}
+
+.v3-table-actions-dropdown {
+  background: var(--v3-table-actions-dropdown-bg);
+  border: 1px solid var(--v3-table-border-color);
+  border-radius: var(--v3-table-button-border-radius);
+  display: none;
+  min-width: var(--v3-table-actions-dropdown-min-width);
+  overflow: hidden;
+  position: absolute;
+  z-index: var(--v3-table-actions-dropdown-z-index);
+}
+
+.v3-table-actions-dropdown.expanded {
+  display: block;
+}
+
+.v3-table-actions-dropdown-action {
+  background: var(--v3-table-actions-dropdown-action-bg);
+  border-bottom: 1px solid var(--v3-table-border-color);
+  color: var(--v3-table-button-color);
+  cursor: pointer;
+  display: block;
+  font-size: var(--v3-table-actions-dropdown-action-font-size);
+  padding: var(--v3-table-actions-dropdown-action-padding);
+}
+
+.v3-table-actions-dropdown-action:last-child {
+  border-bottom: 0;
+}
+
+.v3-table-actions-dropdown-action:hover {
+  background: var(--v3-table-actions-dropdown-action-hover-bg);
+}
+
+.v3-table .v3-table-action:hover {
+  background: var(--v3-table-button-hover-bg);
+}
+
+.v3-table .v3-table-action:last-child {
+  border-bottom: 0;
+}
+</style>

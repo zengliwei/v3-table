@@ -1,9 +1,17 @@
 <script setup>
-import {defineEmits, defineProps, defineComponent, defineExpose, ref, computed, watch, onMounted} from 'vue';
+import {
+  defineEmits,
+  defineProps,
+  defineComponent,
+  defineExpose,
+  defineAsyncComponent,
+  ref,
+  computed,
+  watch,
+  onMounted
+} from 'vue';
 import v3TableTr from './v3-table-tr.vue';
 import v3TableActions from './v3-table-actions.vue';
-import v3TableFilterSelect from './v3-table-filter-select.vue';
-import v3TableFilterText from './v3-table-filter-text.vue';
 
 const emit = defineEmits([
   'row-click', 'row-dblclick', 'row-mouseenter', 'row-mouseleave',
@@ -122,6 +130,7 @@ const props = defineProps({
     default: 'Next'
   }
 });
+
 
 for (let key in props.filterTypes) {
   defineComponent(props.filterTypes[key]);
@@ -252,15 +261,15 @@ watch(
       }
 
       const rebuildFilterConfig = function (filter) {
-        const defaultFilters = {
-          'text': {type: 'v3-table-filter-text', op: 'like'},
-          'select': {type: 'v3-table-filter-select', op: '='},
+        const buildInFilters = {
+          'text': {type: defineAsyncComponent(() => import('./v3-table-filter-text.vue')), op: 'like'},
+          'select': {type: defineAsyncComponent(() => import('./v3-table-filter-select.vue')), op: '='},
           'date': {type: 'v3-table-filter-date-range', op: 'date'}
         };
-        let defaultFilter = defaultFilters[filter['type'] || 'text'];
-        filter['type'] = filter['type'] || 'text';
-        filter['op'] = filter['op'] || '=';
-        filter['params'] = filter['params'] || [];
+        if (buildInFilters[filter['type']]) {
+          !filter['op'] && (filter['op'] = buildInFilters[filter['type']]['op']);
+          filter['type'] = buildInFilters[filter['type']]['type'];
+        }
         return filter;
       };
 
@@ -698,86 +707,6 @@ onMounted(() => {
   background-image: var(--v3-table-cell-expander-expanded-icon-url);
 }
 
-.v3-table .v3-table-main-action {
-  background: var(--v3-table-button-bg);
-  border: 1px solid var(--v3-table-border-color);
-  border-radius: var(--v3-table-button-border-radius);
-  color: var(--v3-table-button-color);
-  cursor: pointer;
-  padding: var(--v3-table-button-padding);
-}
-
-.v3-table .v3-table-action-box {
-  display: flex;
-}
-
-.v3-table .v3-table-action-box .v3-table-main-action {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.v3-table .v3-table-actions-expander {
-  background: var(--v3-table-button-bg);
-  border-color: var(--v3-table-border-color);
-  border-style: solid;
-  border-width: 1px 1px 1px 0;
-  border-top-right-radius: var(--v3-table-button-border-radius);
-  border-bottom-right-radius: var(--v3-table-button-border-radius);
-  cursor: pointer;
-  display: block;
-  padding: var(--v3-table-actions-expander-padding);
-}
-
-.v3-table .v3-table-actions-expander::after {
-  background: var(--v3-table-actions-expander-icon-url) no-repeat center center;
-  background-size: var(--v3-table-actions-expander-icon-width) var(--v3-table-actions-expander-icon-height);
-  content: '';
-  display: block;
-  height: var(--v3-table-actions-expander-icon-height);
-  width: var(--v3-table-actions-expander-icon-width);
-}
-
-.v3-table-actions-dropdown {
-  background: var(--v3-table-actions-dropdown-bg);
-  border: 1px solid var(--v3-table-border-color);
-  border-radius: var(--v3-table-button-border-radius);
-  display: none;
-  min-width: var(--v3-table-actions-dropdown-min-width);
-  overflow: hidden;
-  position: absolute;
-  z-index: var(--v3-table-actions-dropdown-z-index);
-}
-
-.v3-table-actions-dropdown.expanded {
-  display: block;
-}
-
-.v3-table-actions-dropdown-action {
-  background: var(--v3-table-actions-dropdown-action-bg);
-  border-bottom: 1px solid var(--v3-table-border-color);
-  color: var(--v3-table-button-color);
-  cursor: pointer;
-  display: block;
-  font-size: var(--v3-table-actions-dropdown-action-font-size);
-  padding: var(--v3-table-actions-dropdown-action-padding);
-}
-
-.v3-table-actions-dropdown-action:last-child {
-  border-bottom: 0;
-}
-
-.v3-table-actions-dropdown-action:hover {
-  background: var(--v3-table-actions-dropdown-action-hover-bg);
-}
-
-.v3-table .v3-table-action:hover {
-  background: var(--v3-table-button-hover-bg);
-}
-
-.v3-table .v3-table-action:last-child {
-  border-bottom: 0;
-}
-
 
 /*
  * Main Container
@@ -898,19 +827,19 @@ onMounted(() => {
 }
 
 .v3-table .v3-table-body tr td {
-  background-color: var(--v3-table-row-bg);
+  background-color: var(--v3-table-body-row-bg);
 }
 
 .v3-table .v3-table-body tr:nth-child(even) td {
-  background-color: var(--v3-table-row-even-bg);
+  background-color: var(--v3-table-body-row-even-bg);
 }
 
 .v3-table .v3-table-body tr:hover td {
-  background-color: var(--v3-table-row-hover-bg);
+  background-color: var(--v3-table-body-row-hover-bg);
 }
 
 .v3-table .v3-table-body tr.activated td {
-  background-color: var(--v3-table-row-activated-bg);
+  background-color: var(--v3-table-body-row-activated-bg);
 }
 
 .v3-table .v3-table-body td > div {
@@ -930,8 +859,8 @@ onMounted(() => {
 }
 
 .v3-table .v3-table-body td.actions > div {
-  font-size: var(--v3-table-row-actions-font-size);
-  line-height: var(--v3-table-row-actions-line-height);
+  font-size: var(--v3-table-body-row-actions-font-size);
+  line-height: var(--v3-table-body-row-actions-line-height);
 }
 
 .v3-table .v3-table-body td.no-data {
@@ -998,8 +927,23 @@ onMounted(() => {
   color: inherit;
   display: block;
   font-size: inherit;
+  height: var(--v3-table-select-height);
   outline: none;
   padding: var(--v3-table-select-padding);
+  width: 100%;
+}
+
+.v3-table input[type="email"],
+.v3-table input[type="text"],
+.v3-table input[type="password"] {
+  border: 1px solid var(--v3-table-border-color);
+  border-radius: var(--v3-table-select-border-radius);
+  color: inherit;
+  display: block;
+  font-size: inherit;
+  height: var(--v3-table-input-height);
+  outline: none;
+  padding: var(--v3-table-input-padding);
   width: 100%;
 }
 
@@ -1012,7 +956,9 @@ onMounted(() => {
   outline: none;
   border-radius: var(--v3-table-button-border-radius);
   font-size: var(--v3-table-button-font-size);
+  line-height: var(--v3-table-button-height);
   min-width: var(--v3-table-button-min-width);
+  height: calc(var(--v3-table-button-height) + 2px);
   padding: var(--v3-table-button-padding);
 }
 

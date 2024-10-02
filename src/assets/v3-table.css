@@ -4,18 +4,27 @@
 
 :root {
     --v3-table-border-color: #DCDFE6;
+    --v3-table-text-color: #545454;
+
     --v3-table-line-height: 1.5rem;
     --v3-table-link-color: #007bff;
+
     --v3-table-button-bg: #fff;
     --v3-table-button-hover-bg: #f8f9fa;
     --v3-table-button-color: #545454;
     --v3-table-button-border-radius: 3px;
     --v3-table-button-font-size: .875rem;
+    --v3-table-button-height: 1.5rem;
     --v3-table-button-min-width: 3rem;
-    --v3-table-button-padding: calc((var(--v3-table-line-height) - var(--v3-table-body-font-size) - 2px) / 2) 1rem;
+    --v3-table-button-padding: 0 1rem;
+
+    --v3-table-input-height: calc(var(--v3-table-line-height) + 2px);
+    --v3-table-input-padding: 0 .5rem;
+
     --v3-table-select-border-radius: 3px;
-    --v3-table-select-padding: calc((var(--v3-table-line-height) - var(--v3-table-body-font-size) - 2px) / 2) .5rem;
-    --v3-table-text-color: #545454;
+    --v3-table-select-height: var(--v3-table-line-height);
+    --v3-table-select-padding: 0 .5rem;
+
     --v3-table-action-box-padding: .5rem;
     --v3-table-actions-expander-padding: .3125rem;
     --v3-table-actions-expander-icon-url: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M6 9l6 6l6 -6"></path></svg>');
@@ -52,13 +61,12 @@
     --v3-table-body-color: #545454;
     --v3-table-body-font-size: .875rem;
     --v3-table-body-font-weight: 400;
-
-    --v3-table-row-bg: #fff;
-    --v3-table-row-even-bg: #f6f6f7;
-    --v3-table-row-hover-bg: #fff3e0;
-    --v3-table-row-activated-bg: #e3f2fd;
-    --v3-table-row-actions-font-size: .75rem;
-    --v3-table-row-actions-line-height: 1rem;
+    --v3-table-body-row-bg: #fff;
+    --v3-table-body-row-even-bg: #f6f6f7;
+    --v3-table-body-row-hover-bg: #fff3e0;
+    --v3-table-body-row-activated-bg: #e3f2fd;
+    --v3-table-body-row-actions-font-size: .75rem;
+    --v3-table-body-row-actions-line-height: 1rem;
 
     --v3-table-footer-bg: #f4f5f8;
     --v3-table-footer-padding: .5rem .75rem;

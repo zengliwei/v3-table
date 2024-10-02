@@ -16,7 +16,7 @@ let columns = [
   {type: 'checkbox'},
   {type: 'index'},
   {
-    field: 'name', title: 'Name', width: 220, sort: true, expandable: true, fixed: 'left',
+    field: 'name', title: 'Name', width: 240, sort: true, expandable: true, fixed: 'left',
     filter: {type: 'text', op: 'like'}
   },
   {
