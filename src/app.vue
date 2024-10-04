@@ -26,7 +26,7 @@ let columns = [
   {
     field: 'gender', title: 'Gender', width: 100, align: 'center', sort: true,
     renderer: (row, col) => genderOpts.find(opt => opt.value === row[col['field']]).label,
-    filter: {type: 'select', opts: genderOpts}
+    filter: {type: 'select', params: {options: genderOpts}}
   },
   {
     field: 'mobile', title: 'Mobile', width: 160, sort: true,

@@ -541,7 +541,7 @@ onMounted(() => {
                 <component
                     v-if="col['filter']"
                     :is="col['filter']['type']"
-                    :params="col['filter']['params']"></component>
+                    :props="col['filter']['params']"></component>
               </th>
             </template>
             <th v-if="showAutoWidthCol" class="auto"></th>
