@@ -4,7 +4,7 @@ import {
   defineProps,
   defineComponent,
   defineExpose,
-  defineAsyncComponent,
+  markRaw,
   ref,
   computed,
   watch,
@@ -12,6 +12,8 @@ import {
 } from 'vue';
 import v3TableTr from './v3-table-tr.vue';
 import v3TableActions from './v3-table-actions.vue';
+import v3TableFilterText from './v3-table-filter-text.vue';
+import v3TableFilterSelect from './v3-table-filter-select.vue';
 
 const emit = defineEmits([
   'row-click', 'row-dblclick', 'row-mouseenter', 'row-mouseleave',
@@ -107,7 +109,7 @@ const props = defineProps({
 
   tipNoData: {
     type: String,
-    default: 'No data'
+    default: 'No matched data'
   },
 
   tipEmptyValue: {
@@ -131,17 +133,13 @@ const props = defineProps({
   }
 });
 
-
-for (let key in props.filterTypes) {
-  defineComponent(props.filterTypes[key]);
-}
-
 let cols = ref([]),
     rows = ref([]),
     filteredRows = [],
     sourceRows = [],
     activatedRows = ref([]),
-    filters = ref([]),
+    columnFilters = [],
+    customFilters = [],
     hasCheckbox = ref(false),
     showAutoWidthCol = ref(false),
     lastLeftFixedColIdx = ref(-1),
@@ -260,21 +258,27 @@ watch(
         }
       }
 
-      const rebuildFilterConfig = function (filter) {
+      const rebuildFilterConfig = function (col) {
+        let filter = col['filter'];
         const buildInFilters = {
-          'text': {type: defineAsyncComponent(() => import('./v3-table-filter-text.vue')), op: 'like'},
-          'select': {type: defineAsyncComponent(() => import('./v3-table-filter-select.vue')), op: '='},
+          'select': {type: markRaw(v3TableFilterSelect), op: '='},
+          'text': {type: markRaw(v3TableFilterText), op: 'like'},
           'date': {type: 'v3-table-filter-date-range', op: 'date'}
         };
         if (buildInFilters[filter['type']]) {
           !filter['op'] && (filter['op'] = buildInFilters[filter['type']]['op']);
           filter['type'] = buildInFilters[filter['type']]['type'];
         }
+        filter['f'] = col['field'] || col['code'];
+        filter['v'] = ref();
         return filter;
       };
 
       let tmpCols = [];
+      columnFilters = [];
       columns.forEach((col, c) => {
+        let filter = col['filter'] ? rebuildFilterConfig(col) : false;
+        filter && columnFilters.push(filter);
         tmpCols.push({
           code: col['code'] || col['field'],
           type: col['type'] || 'data',
@@ -285,7 +289,7 @@ watch(
           sort: col['sort'] || false,
           sortDir: col['sortDir'] || false,
           renderer: col['renderer'] || false,
-          filter: col['filter'] ? rebuildFilterConfig(col['filter']) : false,
+          filter: filter,
           expandable: col['expandable'] || false,
           actions: col['actions'] || false,
           cssClass: {
@@ -367,20 +371,23 @@ const clickRow = function (row) {
 
 const filterByLocal = function () {
   filteredRows = sourceRows.filter((row) => {
-    filters.forEach((filter) => {
-      if (!row[filter['field']] || filter['v'] === '') {
-        return false;
+    let filters = columnFilters.concat(customFilters);
+    for (let f = 0, filter = filters[f]; f < filters.length; f++) {
+      if (!row[filter['f']] ||
+          filter['v'].value === '' || filter['v'].value === null || filter['v'].value === undefined) {
+        return true;
       }
       if (filter['op'] === '='
-          && row[filter['field']] !== filter['v']) {
-        return false;
+          && (row[filter['f']] + '') !== (filter['v'].value + '')) {
+        continue;
       } else if (filter['op'] === 'like'
-          && row[filter['field']].indexOf(filter['v']) === -1) {
-        return false;
+          && (row[filter['f']] + '').indexOf((filter['v'].value + '')) === -1) {
+        continue;
       } else if (filter['op'] === 'date') {
       }
       return true;
-    });
+    }
+    return false;
   });
   rows.value = filteredRows.slice(0, pageSize.value);
   rowTotal = filteredRows.length;
@@ -401,7 +408,7 @@ const refreshByRemote = function () {
     method: props.srcMethod,
     params: {
       c: props.columns.map((col) => col['field']),
-      f: filters,
+      f: columnFilters.concat(customFilters),
       p: page,
       ps: pageSize.value
     }
@@ -541,7 +548,9 @@ onMounted(() => {
                 <component
                     v-if="col['filter']"
                     :is="col['filter']['type']"
-                    :props="col['filter']['params']"></component>
+                    :props="col['filter']['params']"
+                    v-model:value="col['filter']['v']"
+                    @execute="filter"></component>
               </th>
             </template>
             <th v-if="showAutoWidthCol" class="auto"></th>
@@ -866,6 +875,11 @@ onMounted(() => {
 .v3-table .v3-table-body td.no-data {
   background-color: var(--v3-table-cell-no-data-bg);
   padding: var(--v3-table-cell-no-data-padding);
+  border-bottom: 0;
+}
+
+.v3-table .v3-table-body td.no-data:hover {
+  background: none;
 }
 
 .v3-table .v3-table-body td.no-data > div {

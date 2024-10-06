@@ -26,5 +26,4 @@ const execute = function (evt) {
 </template>
 
 <style>
-
 </style>

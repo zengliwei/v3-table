@@ -13,8 +13,6 @@ const props = defineProps({
   }
 });
 
-console.log(props)
-
 const value = computed({
   get: () => props.value,
   set: (value) => emit('update:value', value)
