@@ -372,22 +372,25 @@ const clickRow = function (row) {
 const filterByLocal = function () {
   filteredRows = sourceRows.filter((row) => {
     let filters = columnFilters.concat(customFilters);
-    for (let f = 0, filter = filters[f]; f < filters.length; f++) {
+    for (let f = 0; f < filters.length; f++) {
+      let filter = filters[f];
+      // Skip filter which is without specified value
       if (!row[filter['f']] ||
           filter['v'].value === '' || filter['v'].value === null || filter['v'].value === undefined) {
-        return true;
+        continue;
       }
+      // Filter out the record which does not match the value with specified operation
       if (filter['op'] === '='
           && (row[filter['f']] + '') !== (filter['v'].value + '')) {
-        continue;
+        return false;
       } else if (filter['op'] === 'like'
           && (row[filter['f']] + '').indexOf((filter['v'].value + '')) === -1) {
-        continue;
+        return false;
       } else if (filter['op'] === 'date') {
       }
-      return true;
     }
-    return false;
+    // The rest records are matched
+    return true;
   });
   rows.value = filteredRows.slice(0, pageSize.value);
   rowTotal = filteredRows.length;
