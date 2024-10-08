@@ -67,7 +67,7 @@ const props = defineProps({
 
   srcHeaders: {
     type: Object,
-    default: {}
+    default: {Accept: 'application/json'}
   },
 
   srcConditions: {
@@ -417,17 +417,24 @@ const updateRows = function (result) {
 
 const refreshByRemote = function () {
   if (props.srcHandler instanceof Function) {
-    props.srcHandler(updateRows);
+    props.srcHandler(updateRows, props);
   } else {
-    let xhr = new XMLHttpRequest();
-    xhr.onload = () => {
-      updateRows(JSON.parse(xhr.responseText));
-    };
+    let xhr = new XMLHttpRequest(), url = props.srcUrl, body = '';
+    if (props.srcMethod.toUpperCase() === 'GET') {
+      url = props.srcUrl.indexOf('?') === -1
+          ? `${props.srcUrl}?p=${page.value}&ps=${pageSize.value}`
+          : `${props.srcUrl}&p=${page.value}&ps=${pageSize.value}`;
+    } else {
+      body = `p=${page.value}&ps=${pageSize.value}`;
+    }
+    xhr.open(props.srcMethod, url);
     for (let key in props.srcHeaders) {
       xhr.setRequestHeader(key, props.srcHeaders[key]);
     }
-    xhr.open(props.srcMethod, props.srcUrl);
-    xhr.send(`p=${page.value}&ps=${pageSize.value}`);
+    xhr.onload = () => {
+      updateRows(JSON.parse(xhr.responseText));
+    };
+    xhr.send(body);
   }
 };
 
