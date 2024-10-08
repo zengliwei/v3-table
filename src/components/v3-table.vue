@@ -65,6 +65,11 @@ const props = defineProps({
     default: 'GET'
   },
 
+  srcHeaders: {
+    type: Object,
+    default: {}
+  },
+
   srcConditions: {
     type: Array
   },
@@ -143,7 +148,7 @@ let cols = ref([]),
     hasCheckbox = ref(false),
     showAutoWidthCol = ref(false),
     lastLeftFixedColIdx = ref(-1),
-    rowTotal = 0,
+    rowTotal = ref(0),
     toolbarActions = ref(props.toolbarActions.map((action) => {
       action['params'] = [activatedRows.value];
       return action;
@@ -156,7 +161,7 @@ let cols = ref([]),
     page = ref(1),
     pageSize = ref(props.pageSize),
     pageCount = computed(() => {
-      return Math.ceil(rowTotal / pageSize.value);
+      return Math.ceil(rowTotal.value / pageSize.value);
     }),
     pages = computed(() => {
       let tmpPages = [];
@@ -169,7 +174,7 @@ let cols = ref([]),
       return props.tipPaging
           .replace(':page_count', pageCount.value)
           .replace(':page', page.value)
-          .replace(':row_total', rowTotal);
+          .replace(':row_total', rowTotal.value);
     }),
     sortOrders = [];
 
@@ -393,12 +398,12 @@ const filterByLocal = function () {
     return true;
   });
   rows.value = filteredRows.slice(0, pageSize.value);
-  rowTotal = filteredRows.length;
+  rowTotal.value = filteredRows.length;
   page.value = 1;
 };
 
 const filter = function () {
-  if (props.srcHandler) {
+  if (props.srcUrl) {
     refreshByRemote();
   } else {
     filterByLocal();
@@ -406,16 +411,22 @@ const filter = function () {
 };
 
 const refreshByRemote = function () {
-  //props.srcHandler
-  fetch(props.srcUrl, {
-    method: props.srcMethod,
-    params: {
-      c: props.columns.map((col) => col['field']),
-      f: columnFilters.concat(customFilters),
-      p: page,
-      ps: pageSize.value
+  if (props.srcHandler instanceof Function) {
+    props.srcHandler();
+  } else {
+    let xhr = new XMLHttpRequest();
+    xhr.onload = () => {
+      let result = JSON.parse(xhr.responseText);
+      rows.value = result.data;
+      rowTotal.value = result.total;
+      page.value = 1;
+    };
+    for (let key in props.srcHeaders) {
+      xhr.setRequestHeader(key, props.srcHeaders[key]);
     }
-  });
+    xhr.open(props.srcMethod, props.srcUrl);
+    xhr.send(`p=${page.value}&ps=${pageSize.value}`);
+  }
 };
 
 const sortByLocal = function () {
@@ -454,12 +465,12 @@ const sort = function (col) {
   col['sortDir'] = sortOrders[0].dir;
   col['cssClass']['asc'] = col['sortDir'] === 'asc';
   col['cssClass']['desc'] = col['sortDir'] === 'desc';
-  props.srcHandler ? sortByRemote() : sortByLocal();
+  props.srcUrl ? sortByRemote() : sortByLocal();
 };
 
 const switchPage = function (p) {
   if (p < 1 || p > pageCount.value) return;
-  if (props.srcHandler) {
+  if (props.srcUrl) {
     refreshByRemote();
   } else {
     page.value = p;
@@ -485,7 +496,7 @@ if (props.autoLoad) {
     sourceRows = props.data;
     filteredRows = props.data;
     rows.value = filteredRows.slice((page.value - 1) * pageSize.value, page.value * pageSize.value);
-    rowTotal = filteredRows.length;
+    rowTotal.value = filteredRows.length;
   }
 }
 
