@@ -410,16 +410,18 @@ const filter = function () {
   }
 };
 
+const updateRows = function (result) {
+  rows.value = result.data;
+  rowTotal.value = result.total;
+};
+
 const refreshByRemote = function () {
   if (props.srcHandler instanceof Function) {
-    props.srcHandler();
+    props.srcHandler(updateRows);
   } else {
     let xhr = new XMLHttpRequest();
     xhr.onload = () => {
-      let result = JSON.parse(xhr.responseText);
-      rows.value = result.data;
-      rowTotal.value = result.total;
-      page.value = 1;
+      updateRows(JSON.parse(xhr.responseText));
     };
     for (let key in props.srcHeaders) {
       xhr.setRequestHeader(key, props.srcHeaders[key]);
@@ -470,10 +472,10 @@ const sort = function (col) {
 
 const switchPage = function (p) {
   if (p < 1 || p > pageCount.value) return;
+  page.value = p;
   if (props.srcUrl) {
     refreshByRemote();
   } else {
-    page.value = p;
     rows.value = filteredRows.slice((page.value - 1) * pageSize.value, page.value * pageSize.value);
     updateCheckAllStatus();
   }
