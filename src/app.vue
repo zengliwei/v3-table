@@ -45,19 +45,18 @@ let columns = [
     ]
   }
 ];
+
+const toolbarActions = [
+  {label: 'Add', handle: (activatedRows) => console.log('Add', activatedRows)},
+  {label: 'Delete', handle: (activatedRows) => console.log('Delete', activatedRows)}
+];
 </script>
 
 <template>
   <v3-table
       :columns="columns"
       :filter-types="filterTypes"
-      :toolbar-actions="[
-        {label: 'Add', handle: (activatedRows) => console.log('Add', activatedRows)},
-        {label: 'Delete', handle: (activatedRows) => console.log('Delete', activatedRows)}
-      ]"
+      :toolbar-actions="toolbarActions"
       src-url="data.json"
       height="calc(100vh - 10rem)"/>
 </template>
-
-<style scoped>
-</style>
