@@ -1,15 +1,5 @@
 <script setup>
-import {
-  defineEmits,
-  defineProps,
-  defineComponent,
-  defineExpose,
-  markRaw,
-  ref,
-  computed,
-  watch,
-  onMounted
-} from 'vue';
+import {defineEmits, defineProps, defineExpose, markRaw, ref, computed, watch, onMounted} from 'vue';
 import v3TableTr from './v3-table-tr.vue';
 import v3TableActions from './v3-table-actions.vue';
 import v3TableFilterText from './v3-table-filter-text.vue';
