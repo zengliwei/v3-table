@@ -36,11 +36,6 @@ const props = defineProps({
     type: Object
   },
 
-  toolbarFilters: {
-    type: Array,
-    default: []
-  },
-
   data: {
     type: Array,
     default: []
