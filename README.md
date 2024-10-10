@@ -63,13 +63,13 @@ A data table component for Vue 3.x.
 
 ## Events
 
-| Event Name      | Description |
-|-----------------|-------------|
-| row-click       |             |
-| row-dblclick    |             |
-| row-mouseenter  |             |
-| row-mouseleave  |             |
-| cell-click      |             |
-| cell-dblclick   |             |
-| cell-mouseenter |             |
-| cell-mouseleave |             |
+| Event Name      | Description                                                                                        |
+|-----------------|----------------------------------------------------------------------------------------------------|
+| row-click       | Mouse click on each row, provides row data as param of the listener function                       |
+| row-dblclick    | Double click on each row, provides row data as param of the listener function                      |
+| row-mouseenter  | Mouse enter on each row, provides row data as param of the listener function                       |
+| row-mouseleave  | Mouse leave on each row, provides row data as param of the listener function                       |
+| cell-click      | Mouse click on each cell, provides row data and column setting as params of the listener function  |
+| cell-dblclick   | Double click on each cell, provides row data and column setting as params of the listener function |
+| cell-mouseenter | Mouse enter on each cell, provides row data and column setting as params of the listener function  |
+| cell-mouseleave | Mouse leave on each cell, provides row data and column setting as params of the listener function  |
