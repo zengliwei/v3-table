@@ -1,6 +1,5 @@
 {
-    "name": "v3-table",
-    "private": true,
+    "name": "v3-d-table",
     "version": "0.0.0",
     "author": "Zengliwei",
     "type": "module",
