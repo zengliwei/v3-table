@@ -74,7 +74,7 @@ A data table component for Vue 3.x.
 | cell-mouseenter | row, col        |
 | cell-mouseleave | row, col        |
 
-| Listener Param | Description            |
-|----------------|------------------------|
-| row            | Row data               |
-| col            | Rebuilt column setting |
+| Listener Param     | Description             |
+|--------------------|-------------------------|
+| &lt;Object&gt; row | Row data                |
+| &lt;Object&gt; col | Rebuilt column settings |
