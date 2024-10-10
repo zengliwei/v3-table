@@ -43,23 +43,47 @@ A data table component for Vue 3.x.
 
 ### Column Options
 
-| Option     | Type     | Default | Description                                               |
-|------------|----------|---------|-----------------------------------------------------------|
-| type       | String   | data    | Optional types are `checkbox`, `index`, `actions`, `data` |
-| code       | String   | -       | Column name                                               |
-| field      | String   | -       | Field name or expression for data column                  |
-| hidden     | Boolean  | false   | Whether the column is hidden                              |
-| title      | String   | -       | Column title                                              |
-| align      | String   | -       | Text align                                                |
-| fixed      | String   | -       | Optional fixed positions are `left`, `right`              |
-| width      | Number   | -       | Width of the column, unit `px`                            |
-| filter     | Object   | -       | Filter settings                                           |
-| sort       | Boolean  | false   | Whether the column is sortable                            |
-| gbk        | Boolean  | false   | Whether the column is sorted by gbk                       |
-| sortDir    | String   | -       | Default sort direction                                    |
-| renderer   | Function | -       | Cell renderer                                             |
-| expandable | Boolean  | false   | Whether the column shows expandable icon                  |
-| actions    | Array    | -       | Row actions                                               |
+| Option     | Type     | Default | Description                                                           |
+|------------|----------|---------|-----------------------------------------------------------------------|
+| type       | String   | data    | Optional types are `checkbox`, `index`, `actions`, `data`             |
+| code       | String   | -       | Column name                                                           |
+| field      | String   | -       | Field name or expression for data column                              |
+| hidden     | Boolean  | false   | Whether the column is hidden                                          |
+| title      | String   | -       | Column title                                                          |
+| align      | String   | -       | Text align                                                            |
+| fixed      | String   | -       | Optional fixed positions are `left`, `right`                          |
+| width      | Number   | -       | Width of the column, unit `px`                                        |
+| sort       | Boolean  | false   | Whether the column is sortable                                        |
+| gbk        | Boolean  | false   | Whether the column is sorted by gbk                                   |
+| sortDir    | String   | -       | Default sort direction                                                |
+| renderer   | Function | -       | Cell renderer: fn (&lt;Object&gt; row, &lt;Object&gt; col): String    |
+| tpl        | String   | -       | Cell template                                                         |
+| expandable | Boolean  | false   | Whether the cell shows an expandable icon when the row has child item |
+| actions    | Array    | -       | Row actions                                                           |
+| filter     | Object   | -       | Filter options                                                        |
+
+### Row Action
+
+| Action  | Type     | Description                                                              |
+|---------|----------|--------------------------------------------------------------------------|
+| label   | String   | Label to show in the action group                                        |
+| canShow | Function | Whether to show the action for the row: fn (&lt;Object&gt; row): Boolean |
+| handle  | Function | Handle the action: fn (&lt;Object&gt; row): void                         |
+
+### Filter Options
+
+| Option | Type   | Description                                                                                                                         |
+|--------|--------|-------------------------------------------------------------------------------------------------------------------------------------|
+| type   | String | Filter type, pre-defined types are `text`, `select`, `date`. You can also define your own types with the `customFilterTypes` option |
+| op     | String | Optional operations for pre-defined types are `=`, `like`                                                                           |
+| params | Object | Parameters of the filter, this is depended on the filter type                                                                       |
+
+### Toolbar Action
+
+| Action | Type     | Description                                      |
+|--------|----------|--------------------------------------------------|
+| label  | String   | Label to show in the action group                |
+| handle | Function | Handle the action: fn (&lt;Array&gt; rows): void |
 
 ## Events
 
