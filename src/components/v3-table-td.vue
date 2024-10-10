@@ -24,7 +24,7 @@ const props = defineProps({
     default: 0
   },
 
-  tipEmptyValue: {
+  emptyValue: {
     type: String,
     default: '-'
   }
@@ -35,7 +35,7 @@ const renderContent = function (row, col) {
       ? col['renderer'](row, col)
       : row[col['code']];
   if ([undefined, null, ''].indexOf(html) > -1) {
-    html = props.tipEmptyValue;
+    html = props.emptyValue;
   }
   return html;
 };

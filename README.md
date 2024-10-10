@@ -16,30 +16,30 @@ A data table component for Vue 3.x.
 
 ### Table Options
 
-| Option           | Type     | Required | Default                                      | Description |
-|------------------|----------|----------|----------------------------------------------|-------------|
-| columns          | Array    | true     | -                                            |             |
-| showToolbar      | Boolean  | false    | true                                         |             |
-| toolbarActions   | Array    | false    | []                                           |             |
-| showColumnFilter | Boolean  | false    | true                                         |             |
-| filterTypes      | Object   | false    | -                                            |             |
-| data             | Array    | false    | -                                            |             |
-| srcUrl           | String   | false    | -                                            |             |
-| srcMethod        | String   | false    | GET                                          |             |
-| srcHeaders       | Object   | false    | {Accept: 'application/json'}                 |             |
-| srcConditions    | Array    | false    | -                                            |             |
-| srcHandler       | Function | false    | -                                            |             |
-| height           | String   | false    | -                                            |             |
-| autoLoad         | Boolean  | false    | true                                         |             |
-| pageSize         | Number   | false    | 50                                           |             |
-| pageSizes        | Array    | false    | [20, 50, 100, 200]                           |             |
-| page             | Number   | false    | 1                                            |             |
-| tipCheckedStatus | String   | false    | :checked item(s) checked                     |             |
-| tipPaging        | String   | false    | Page :page of :page_count (:row_total items) |             |
-| tipNoData        | String   | false    | No matched data                              |             |
-| tipEmptyValue    | String   | false    | -                                            |             |
-| labelPrevPage    | String   | false    | Prev                                         |             |
-| labelNextPage    | String   | false    | Next                                         |             |
+| Option            | Type     | Default                                      | Description                                                             |
+|-------------------|----------|----------------------------------------------|-------------------------------------------------------------------------|
+| columns           | Array    | -                                            | An array of column settings, see Column Options                         |
+| height            | String   | -                                            | Set table height with css style expression                              |
+| showToolbar       | Boolean  | true                                         | Whether to show the toolbar at top of the table                         |
+| toolbarActions    | Array    | []                                           | Toolbar actions for selected items                                      |
+| showColumnFilter  | Boolean  | true                                         | Whether to show the column filter below the table captions              |
+| customFilterTypes | Object   | -                                            | Define custom filter types for column filter                            |
+| data              | Array    | -                                            | Set table data                                                          |
+| srcUrl            | String   | -                                            | Set a source URL to get data remotely                                   |
+| srcMethod         | String   | GET                                          | Request method for the source URL                                       |
+| srcHeaders        | Object   | {Accept: 'application/json'}                 | Request headers for getting data remotely                               |
+| srcParams         | Array    | -                                            | Request parameters for getting data remotely                            |
+| srcHandler        | Function | -                                            | Define your customized handler for getting data remotely                |
+| autoLoad          | Boolean  | true                                         | Whether to load source data on initializing when `srcUrl` is specified  |
+| pageSize          | Number   | 50                                           | Set page size, child items are not contained in this digital            |
+| pageSizes         | Array    | [20, 50, 100, 200]                           | Set page size options                                                   |
+| page              | Number   | 1                                            | Set which page to show on initializing                                  |
+| emptyValue        | String   | -                                            | Set HTML to show when a cell data is null, undefined or an empty string |
+| i18nCheckedStatus | String   | :checked item(s) checked                     | i18n: Checked item state on toolbar                                     |
+| i18nPaging        | String   | Page :page of :page_count (:row_total items) | i18n: Paging info                                                       |
+| i18nNoData        | String   | No matched data                              | i18n: Tip of no matched data                                            |
+| i18nPrevPage      | String   | Prev                                         | i18n: Label of previous page button                                     |
+| i18nNextPage      | String   | Next                                         | i18n: Label of next page button                                         |
 
 ### Column Options
 
@@ -63,13 +63,18 @@ A data table component for Vue 3.x.
 
 ## Events
 
-| Event Name      | Description                                                                                        |
-|-----------------|----------------------------------------------------------------------------------------------------|
-| row-click       | Mouse click on each row, provides row data as param of the listener function                       |
-| row-dblclick    | Double click on each row, provides row data as param of the listener function                      |
-| row-mouseenter  | Mouse enter on each row, provides row data as param of the listener function                       |
-| row-mouseleave  | Mouse leave on each row, provides row data as param of the listener function                       |
-| cell-click      | Mouse click on each cell, provides row data and column setting as params of the listener function  |
-| cell-dblclick   | Double click on each cell, provides row data and column setting as params of the listener function |
-| cell-mouseenter | Mouse enter on each cell, provides row data and column setting as params of the listener function  |
-| cell-mouseleave | Mouse leave on each cell, provides row data and column setting as params of the listener function  |
+| Event Name      | Listener Params |
+|-----------------|-----------------|
+| row-click       | row             |
+| row-dblclick    | row             |
+| row-mouseenter  | row             |
+| row-mouseleave  | row             |
+| cell-click      | row, col        |
+| cell-dblclick   | row, col        |
+| cell-mouseenter | row, col        |
+| cell-mouseleave | row, col        |
+
+| Listener Param | Description            |
+|----------------|------------------------|
+| row            | Row data               |
+| col            | Rebuilt column setting |

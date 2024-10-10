@@ -6,7 +6,7 @@ let genderOpts = [
   {value: 'female', label: 'Female'}
 ];
 
-let filterTypes = {
+let customFilterTypes = {
   select: {
     props: {}
   }
@@ -55,7 +55,7 @@ const toolbarActions = [
 <template>
   <v3-table
       :columns="columns"
-      :filter-types="filterTypes"
+      :custom-filter-types="customFilterTypes"
       :toolbar-actions="toolbarActions"
       src-url="data.json"
       height="calc(100vh - 10rem)"/>

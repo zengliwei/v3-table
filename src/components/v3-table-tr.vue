@@ -28,7 +28,7 @@ const props = defineProps({
     default: false
   },
 
-  tipEmptyValue: {
+  emptyValue: {
     type: String,
     default: '-'
   },
@@ -92,7 +92,7 @@ const rebuildActions = function (actions, row) {
           :row="row"
           :row-idx="idx"
           :level="level"
-          :tip-empty-value="tipEmptyValue"
+          :empty-value="emptyValue"
           :class="{data: true, 'last-fixed-left': lastLeftFixedColIdx === c}"
           @click="$emit('cell-click', row, col)"
           @dblclick="$emit('cell-dblclick', row, col)"
@@ -107,7 +107,7 @@ const rebuildActions = function (actions, row) {
         :row="child"
         :cols="cols"
         :show-auto-width-col="showAutoWidthCol"
-        :tip-empty-value="tipEmptyValue"
+        :empty-value="emptyValue"
         :last-left-fixed-col-idx="lastLeftFixedColIdx"
         :activated-rows="activatedRows"
         :level="level + 1"

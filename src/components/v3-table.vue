@@ -32,7 +32,7 @@ const props = defineProps({
     default: true
   },
 
-  filterTypes: {
+  customFilterTypes: {
     type: Object
   },
 
@@ -55,7 +55,7 @@ const props = defineProps({
     default: {Accept: 'application/json'}
   },
 
-  srcConditions: {
+  srcParams: {
     type: Array
   },
 
@@ -87,32 +87,32 @@ const props = defineProps({
     default: 1
   },
 
-  tipCheckedStatus: {
+  i18nCheckedStatus: {
     type: String,
     default: ':checked item(s) checked'
   },
 
-  tipPaging: {
+  i18nPaging: {
     type: String,
     default: 'Page :page of :page_count (:row_total items)'
   },
 
-  tipNoData: {
+  i18nNoData: {
     type: String,
     default: 'No matched data'
   },
 
-  tipEmptyValue: {
+  emptyValue: {
     type: String,
     default: '-'
   },
 
-  labelPrevPage: {
+  i18nPrevPage: {
     type: String,
     default: 'Prev'
   },
 
-  labelNextPage: {
+  i18nNextPage: {
     type: String,
     default: 'Next'
   }
@@ -133,8 +133,8 @@ let cols = ref([]),
       action['params'] = [activatedRows.value];
       return action;
     })),
-    tipCheckedStatus = computed(() => {
-      return props.tipCheckedStatus
+    i18nCheckedStatus = computed(() => {
+      return props.i18nCheckedStatus
           .replace(':checked', activatedRows.value.length)
           .replace(':total', rows.value.length);
     }),
@@ -150,8 +150,8 @@ let cols = ref([]),
       }
       return tmpPages;
     }),
-    tipPaging = computed(() => {
-      return props.tipPaging
+    i18nPaging = computed(() => {
+      return props.i18nPaging
           .replace(':page_count', pageCount.value)
           .replace(':page', page.value)
           .replace(':row_total', rowTotal.value);
@@ -505,7 +505,7 @@ onMounted(() => {
         <div class="v3-table-toolbar-left">
           <div class="v3-table-toolbar-actions">
             <v3-table-actions :actions="toolbarActions"/>
-            <div v-if="hasCheckbox" class="v3-table-header-checked-status" v-text="tipCheckedStatus"></div>
+            <div v-if="hasCheckbox" class="v3-table-header-checked-status" v-text="i18nCheckedStatus"></div>
           </div>
           <div>
             <slot name="toolbar-left"></slot>
@@ -572,7 +572,7 @@ onMounted(() => {
                   :row="row"
                   :cols="cols"
                   :show-auto-width-col="showAutoWidthCol"
-                  :tip-empty-value="tipEmptyValue"
+                  :empty-value="emptyValue"
                   :last-left-fixed-col-idx="lastLeftFixedColIdx"
                   :activated-rows="activatedRows"
                   @click="(obj) => clickRow(obj)"
@@ -590,7 +590,7 @@ onMounted(() => {
             <tr>
               <td :colspan="cols.length"
                   class="no-data">
-                <div v-text="tipNoData"></div>
+                <div v-text="i18nNoData"></div>
               </td>
             </tr>
           </template>
@@ -605,16 +605,16 @@ onMounted(() => {
           <option v-for="p in pageSizes" :value="p" :selected="p === pageSize" v-text="p"></option>
         </select>
       </div>
-      <div v-text="tipPaging"></div>
+      <div v-text="i18nPaging"></div>
       <div class="paginator">
         <a href="#" :class="{disabled: page === 1}"
-           v-text="props.labelPrevPage"
+           v-text="props.i18nPrevPage"
            @click.prevent="switchPage(page - 1)"></a>
         <select @change="(evt) => switchPage(evt.currentTarget.value)">
           <option v-for="p in pages" :value="p" :selected="p === page" v-text="p"></option>
         </select>
         <a href="#" :class="{disabled: page === pageCount}"
-           v-text="props.labelNextPage"
+           v-text="props.i18nNextPage"
            @click.prevent="switchPage(page + 1)"></a>
       </div>
     </div>
