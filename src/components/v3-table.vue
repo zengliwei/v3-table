@@ -107,11 +107,6 @@ const props = defineProps({
     default: '-'
   },
 
-  labelToolbarFilter: {
-    type: String,
-    default: 'Filter'
-  },
-
   labelPrevPage: {
     type: String,
     default: 'Prev'

@@ -16,31 +16,30 @@ A data table component for Vue 3.x.
 
 ### Table Options
 
-| Option             | Type     | Description |
-|--------------------|----------|-------------|
-| columns            | Array    |             |
-| showToolbar        | Boolean  |             |
-| toolbarActions     | Array    |             |
-| showColumnFilter   | Boolean  |             |
-| filterTypes        | Object   |             |
-| data               | Array    |             |
-| srcUrl             | String   |             |
-| srcMethod          | String   |             |
-| srcHeaders         | Object   |             |
-| srcConditions      | Array    |             |
-| srcHandler         | Function |             |
-| height             | String   |             |
-| autoLoad           | Boolean  |             |
-| pageSize           | Number   |             |
-| pageSizes          | Array    |             |
-| page               | Number   |             |
-| tipCheckedStatus   | String   |             |
-| tipPaging          | String   |             |
-| tipNoData          | String   |             |
-| tipEmptyValue      | String   |             |
-| labelToolbarFilter | String   |             |
-| labelPrevPage      | String   |             |
-| labelNextPage      | String   |             |
+| Option           | Type     | Required | Default                                      | Description |
+|------------------|----------|----------|----------------------------------------------|-------------|
+| columns          | Array    | true     | -                                            |             |
+| showToolbar      | Boolean  | false    | true                                         |             |
+| toolbarActions   | Array    | false    | []                                           |             |
+| showColumnFilter | Boolean  | false    | true                                         |             |
+| filterTypes      | Object   | false    | -                                            |             |
+| data             | Array    | false    | -                                            |             |
+| srcUrl           | String   | false    | -                                            |             |
+| srcMethod        | String   | false    | GET                                          |             |
+| srcHeaders       | Object   | false    | {Accept: 'application/json'}                 |             |
+| srcConditions    | Array    | false    | -                                            |             |
+| srcHandler       | Function | false    | -                                            |             |
+| height           | String   | false    | -                                            |             |
+| autoLoad         | Boolean  | false    | true                                         |             |
+| pageSize         | Number   | false    | 50                                           |             |
+| pageSizes        | Array    | false    | [20, 50, 100, 200]                           |             |
+| page             | Number   | false    | 1                                            |             |
+| tipCheckedStatus | String   | false    | :checked item(s) checked                     |             |
+| tipPaging        | String   | false    | Page :page of :page_count (:row_total items) |             |
+| tipNoData        | String   | false    | No matched data                              |             |
+| tipEmptyValue    | String   | false    | -                                            |             |
+| labelPrevPage    | String   | false    | Prev                                         |             |
+| labelNextPage    | String   | false    | Next                                         |             |
 
 ### Column Options
 
