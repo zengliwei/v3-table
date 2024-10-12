@@ -8,7 +8,10 @@ export default defineConfig({
     build: {
         cssCodeSplit: true,
         lib: {
-            entry: `src/${libEntry}.js`,
+            entry: [
+                `src/${libEntry}.js`,
+                `src/assets/v3-d-table-default.css`
+            ],
             name: 'v3-d-table',
             fileName: () => 'lib/v3-d-table.[format].js'
         },
@@ -19,8 +22,10 @@ export default defineConfig({
                     vue: 'Vue'
                 },
                 assetFileNames: (info) => {
-                    return info['originalFileName'] === `src/${libEntry}.js`
-                        ? 'lib/v3-d-table.min.css' : 'lib/[name].[hash].[ext]';
+                    if (info.name.length - info.name.lastIndexOf('.css') === 4) {
+                        return `lib/${info.name.substring(0, info.name.length - 4)}.min.css`;
+                    }
+                    return 'lib/[name].[ext]';
                 }
             }
         }
