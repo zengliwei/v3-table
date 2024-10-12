@@ -1,7 +1,7 @@
 <script setup>
 import {defineEmits, defineProps} from 'vue';
-import V3TableTd from './v3-table-td.vue';
-import V3TableActions from './v3-table-actions.vue';
+import v3DTableTd from './v3-d-table-td.vue';
+import v3DTableActions from './v3-d-table-actions.vue';
 
 const emit = defineEmits([
   'click', 'dblclick', 'mouseenter', 'mouseleave', 'check',
@@ -83,10 +83,10 @@ const rebuildActions = function (actions, row) {
       </td>
       <td v-if="col['type'] === 'actions'" class="actions" :style="col.style">
         <div>
-          <v3-table-actions :actions="rebuildActions(col['actions'], row)"/>
+          <v3-d-table-actions :actions="rebuildActions(col['actions'], row)"/>
         </div>
       </td>
-      <v3-table-td
+      <v3-d-table-td
           ref="td"
           :col="col"
           :row="row"
@@ -102,7 +102,7 @@ const rebuildActions = function (actions, row) {
     <td v-if="showAutoWidthCol"></td>
   </tr>
   <template v-if="row['children'] && row['_expanded_']">
-    <v3-table-tr
+    <v3-d-table-tr
         v-for="child in row['children']"
         :row="child"
         :cols="cols"

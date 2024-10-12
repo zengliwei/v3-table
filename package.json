@@ -1,6 +1,6 @@
 {
     "name": "v3-d-table",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "author": "Zengliwei",
     "type": "module",
     "keywords": [
@@ -11,12 +11,12 @@
     "files": [
         "dist"
     ],
-    "main": "./dist/lib/v3-table.umd.js",
-    "module": "./dist/lib/v3-table.es.js",
+    "main": "./dist/lib/v3-d-table.umd.js",
+    "module": "./dist/lib/v3-d-table.es.js",
     "exports": {
         ".": {
-            "import": "./dist/lib/v3-table.es.js",
-            "require": "./dist/lib/v3-table.umd.js"
+            "import": "./dist/lib/v3-d-table.es.js",
+            "require": "./dist/lib/v3-d-table.umd.js"
         }
     },
     "devDependencies": {

@@ -80,11 +80,11 @@ const expand = async function (row) {
       @mouseleave="$emit('mouseleave')">
     <div>
       <div v-if="col['expandable']"
-           :class="`v3-table-cell-lv lv${level}`">
+           :class="`v3-d-table-cell-lv lv${level}`">
         <span
             v-if="row['children']"
             :class="{
-              'v3-table-cell-expander': true,
+              'v3-d-table-cell-expander': true,
               'loading': row['_loading_'],
               'expanded': row['_expanded_']
             }"

@@ -1,7 +1,7 @@
 import {defineConfig} from 'vite';
 import vue from '@vitejs/plugin-vue';
 
-const libEntry = 'v3-table';
+const libEntry = 'v3-d-table';
 
 export default defineConfig({
     plugins: [vue()],
@@ -9,8 +9,8 @@ export default defineConfig({
         cssCodeSplit: true,
         lib: {
             entry: `src/${libEntry}.js`,
-            name: 'v3-table',
-            fileName: () => 'lib/v3-table.[format].js'
+            name: 'v3-d-table',
+            fileName: () => 'lib/v3-d-table.[format].js'
         },
         rollupOptions: {
             external: ['vue'],
@@ -20,7 +20,7 @@ export default defineConfig({
                 },
                 assetFileNames: (info) => {
                     return info['originalFileName'] === `src/${libEntry}.js`
-                        ? 'lib/v3-table.min.css' : 'lib/[name].[hash].[ext]';
+                        ? 'lib/v3-d-table.min.css' : 'lib/[name].[hash].[ext]';
                 }
             }
         }

@@ -9,7 +9,7 @@ import {reactive} from 'vue';
 const globalInstances = reactive([]);
 
 export default {
-  name: 'v3-table-actions',
+  name: 'v3-d-table-actions',
 
   expose: ['close'],
 
@@ -87,27 +87,27 @@ export default {
 </script>
 
 <template>
-  <div class="v3-table-actions" ref="elContainer">
+  <div class="v3-d-table-actions" ref="elContainer">
     <template v-if="myActions.length === 1">
-      <a class="v3-table-action"
+      <a class="v3-d-table-action"
          v-text="myActions[0]['label']"
          @click.stop="handleAction(myActions[0])"></a>
     </template>
     <template v-if="myActions.length > 1">
-      <div ref="elActionBox" class="v3-table-action-box">
-        <a class="v3-table-main-action"
+      <div ref="elActionBox" class="v3-d-table-action-box">
+        <a class="v3-d-table-main-action"
            v-text="myActions[0]['label']"
            @click.stop="handleAction(myActions[0])"></a>
-        <span class="v3-table-actions-expander"
+        <span class="v3-d-table-actions-expander"
               @click.stop="evt => dropdown(evt)"></span>
       </div>
       <teleport to="body">
         <div ref="elDropdown"
-             :class="{'v3-table-actions-dropdown': true, expanded: expanded}"
+             :class="{'v3-d-table-actions-dropdown': true, expanded: expanded}"
              :style="dropdownStyle">
           <template v-for="(action, a) in myActions">
             <a v-if="a > 0"
-               class="v3-table-actions-dropdown-action"
+               class="v3-d-table-actions-dropdown-action"
                v-text="action['label']"
                @click.stop="handleAction(action)"></a>
           </template>
@@ -118,85 +118,85 @@ export default {
 </template>
 
 <style>
-.v3-table .v3-table-main-action {
-  background: var(--v3-table-button-bg);
-  border: 1px solid var(--v3-table-border-color);
-  border-radius: var(--v3-table-button-border-radius);
-  color: var(--v3-table-button-color);
+.v3-d-table .v3-d-table-main-action {
+  background: var(--v3-d-table-button-bg);
+  border: 1px solid var(--v3-d-table-border-color);
+  border-radius: var(--v3-d-table-button-border-radius);
+  color: var(--v3-d-table-button-color);
   cursor: pointer;
-  line-height: var(--v3-table-button-height);
-  height: calc(var(--v3-table-button-height) + 2px);
-  padding: var(--v3-table-button-padding);
+  line-height: var(--v3-d-table-button-height);
+  height: calc(var(--v3-d-table-button-height) + 2px);
+  padding: var(--v3-d-table-button-padding);
 }
 
-.v3-table .v3-table-action-box {
+.v3-d-table .v3-d-table-action-box {
   display: flex;
 }
 
-.v3-table .v3-table-action-box .v3-table-main-action {
+.v3-d-table .v3-d-table-action-box .v3-d-table-main-action {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
 
-.v3-table .v3-table-actions-expander {
-  background: var(--v3-table-button-bg);
-  border-color: var(--v3-table-border-color);
+.v3-d-table .v3-d-table-actions-expander {
+  background: var(--v3-d-table-button-bg);
+  border-color: var(--v3-d-table-border-color);
   border-style: solid;
   border-width: 1px 1px 1px 0;
-  border-top-right-radius: var(--v3-table-button-border-radius);
-  border-bottom-right-radius: var(--v3-table-button-border-radius);
+  border-top-right-radius: var(--v3-d-table-button-border-radius);
+  border-bottom-right-radius: var(--v3-d-table-button-border-radius);
   cursor: pointer;
   display: block;
-  padding: var(--v3-table-actions-expander-padding);
+  padding: var(--v3-d-table-actions-expander-padding);
 }
 
-.v3-table .v3-table-actions-expander::after {
-  background: var(--v3-table-actions-expander-icon-url) no-repeat center center;
-  background-size: var(--v3-table-actions-expander-icon-width) var(--v3-table-actions-expander-icon-height);
+.v3-d-table .v3-d-table-actions-expander::after {
+  background: var(--v3-d-table-actions-expander-icon-url) no-repeat center center;
+  background-size: var(--v3-d-table-actions-expander-icon-width) var(--v3-d-table-actions-expander-icon-height);
   content: '';
   display: block;
-  height: var(--v3-table-actions-expander-icon-height);
-  width: var(--v3-table-actions-expander-icon-width);
+  height: var(--v3-d-table-actions-expander-icon-height);
+  width: var(--v3-d-table-actions-expander-icon-width);
 }
 
-.v3-table-actions-dropdown {
-  background: var(--v3-table-actions-dropdown-bg);
-  border: 1px solid var(--v3-table-border-color);
-  border-radius: var(--v3-table-button-border-radius);
+.v3-d-table-actions-dropdown {
+  background: var(--v3-d-table-actions-dropdown-bg);
+  border: 1px solid var(--v3-d-table-border-color);
+  border-radius: var(--v3-d-table-button-border-radius);
   display: none;
-  min-width: var(--v3-table-actions-dropdown-min-width);
+  min-width: var(--v3-d-table-actions-dropdown-min-width);
   overflow: hidden;
   position: absolute;
-  z-index: var(--v3-table-actions-dropdown-z-index);
+  z-index: var(--v3-d-table-actions-dropdown-z-index);
 }
 
-.v3-table-actions-dropdown.expanded {
+.v3-d-table-actions-dropdown.expanded {
   display: block;
 }
 
-.v3-table-actions-dropdown-action {
-  background: var(--v3-table-actions-dropdown-action-bg);
-  border-bottom: 1px solid var(--v3-table-border-color);
-  color: var(--v3-table-button-color);
+.v3-d-table-actions-dropdown-action {
+  background: var(--v3-d-table-actions-dropdown-action-bg);
+  border-bottom: 1px solid var(--v3-d-table-border-color);
+  color: var(--v3-d-table-button-color);
   cursor: pointer;
   display: block;
-  font-size: var(--v3-table-actions-dropdown-action-font-size);
-  padding: var(--v3-table-actions-dropdown-action-padding);
+  font-size: var(--v3-d-table-actions-dropdown-action-font-size);
+  padding: var(--v3-d-table-actions-dropdown-action-padding);
 }
 
-.v3-table-actions-dropdown-action:last-child {
+.v3-d-table-actions-dropdown-action:last-child {
   border-bottom: 0;
 }
 
-.v3-table-actions-dropdown-action:hover {
-  background: var(--v3-table-actions-dropdown-action-hover-bg);
+.v3-d-table-actions-dropdown-action:hover {
+  background: var(--v3-d-table-actions-dropdown-action-hover-bg);
 }
 
-.v3-table .v3-table-action:hover {
-  background: var(--v3-table-button-hover-bg);
+.v3-d-table .v3-d-table-action:hover {
+  background: var(--v3-d-table-button-hover-bg);
 }
 
-.v3-table .v3-table-action:last-child {
+.v3-d-table .v3-d-table-action:last-child {
   border-bottom: 0;
 }
 </style>

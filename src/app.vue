@@ -1,5 +1,5 @@
 <script setup>
-import v3Table from './components/v3-table.vue'
+import v3DTable from './components/v3-d-table.vue'
 
 let genderOpts = [
   {value: 'male', label: 'Male'},
@@ -53,7 +53,7 @@ const toolbarActions = [
 </script>
 
 <template>
-  <v3-table
+  <v3-d-table
       :columns="columns"
       :custom-filter-types="customFilterTypes"
       :toolbar-actions="toolbarActions"
