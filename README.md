@@ -18,38 +18,103 @@ A data table component for Vue 3.x.
 ### Independent script
 
 ```html
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-d-table-default.min.css"/>
-<script src="https://unpkg.com/vue@3.x"></script>
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-d-table-theme.min.css"/>
+<script src="https://unpkg.com/vue@3.5.12/dist/vue.global.prod.js"></script>
 <script src="https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-table.umd.js"></script>
 ```
 
 ```html
 <div id="app">
-    <v3-d-table :columns="columns" :data="data" height="calc(100vh - 100px)"></v3-d-table>
+    <v3-d-table :columns="columns" :data="data" height="calc(100vh - 200px)"></v3-d-table>
 </div>
 ```
 
 ```javascript
-const { createApp } = Vue;
-const { V3DTable } = V3DTable;
+const {createApp} = Vue;
+const {V3DTable} = V3DTable;
 
 const app = createApp({
     data: () => {
         return {
             columns: [
-                { code: 'name', title: 'Name', field: 'name' },
-                { code: 'age', title: 'Age', field: 'age' }
+                {code: 'name', title: 'Name', field: 'name'},
+                {code: 'age', title: 'Age', field: 'age'}
             ],
             data: [
-                { name: 'Alice', age: 20 },
-                { name: 'Bob', age: 21 }
+                {name: 'Alice', age: 20},
+                {name: 'Bob', age: 21}
             ]
         };
     }
 });
-
 app.component('v3-d-table', V3DTable);
 app.mount('#app');
+```
+
+### ES Module
+
+```html
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-d-table-theme.min.css"/>
+<script type="importmap">
+    {"imports": {
+        "vue": "https://unpkg.com/vue@3.5.12/dist/vue.esm-browser.prod.js",
+        "v3-d-table": "https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-d-table.es.js"
+    }}
+</script>
+```
+
+```html
+<div id="app">
+    <v3-d-table :columns="columns" :data="data" height="calc(100vh - 200px)"></v3-d-table>
+</div>
+```
+
+```javascript
+import {createApp} from 'vue';
+import {V3DTable} from 'v3-d-table';
+
+const app = createApp({
+    data: () => {
+        return {
+            columns: [
+                {code: 'name', title: 'Name', field: 'name'},
+                {code: 'age', title: 'Age', field: 'age'}
+            ],
+            data: [
+                {name: 'Alice', age: 20},
+                {name: 'Bob', age: 21}
+            ]
+        };
+    }
+});
+app.component('v3-d-table', V3DTable);
+app.mount('#app');
+```
+
+### npm & Vue
+
+```bash
+npm install v3-d-table
+```
+
+```html
+<script setup>
+import {V3DTable} from 'v3-d-table';
+
+const columns = [
+    {code: 'name', title: 'Name', field: 'name'},
+    {code: 'age', title: 'Age', field: 'age'}
+];
+
+const data = [
+    {name: 'Alice', age: 20},
+    {name: 'Bob', age: 21}
+];
+</script>
+
+<template>
+    <v3-d-table :columns="columns" :data="data" height="calc(100vh - 200px)"></v3-d-table>
+</template>
 ```
 
 ## Configuration
