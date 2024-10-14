@@ -17,7 +17,11 @@ A data table component for Vue 3.x.
 
 ## Usage
 
-### Independent script
+Three ways are supported to use the component, here are the examples.
+
+### Use library as global variable
+
+Request the theme CSS and script files from CDN.
 
 ```html
 <link rel="stylesheet" type="text/css" href="https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-d-table-theme.min.css"/>
@@ -25,11 +29,15 @@ A data table component for Vue 3.x.
 <script src="https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-table.umd.js"></script>
 ```
 
+Use a div element with an id to mount the app.
+
 ```html
 <div id="app">
     <v3-d-table :columns="columns" :data="data" height="calc(100vh - 200px)"></v3-d-table>
 </div>
 ```
+
+Write the script to create the Vue app.
 
 ```javascript
 const {createApp} = Vue;
@@ -55,6 +63,8 @@ app.mount('#app');
 
 ### ES Module
 
+Request the theme CSS file and import the libraries from CDN.
+
 ```html
 <link rel="stylesheet" type="text/css" href="https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-d-table-theme.min.css"/>
 <script type="importmap">
@@ -65,11 +75,15 @@ app.mount('#app');
 </script>
 ```
 
+Use a div element with an id to mount the app.
+
 ```html
 <div id="app">
     <v3-d-table :columns="columns" :data="data" height="calc(100vh - 200px)"></v3-d-table>
 </div>
 ```
+
+Write the script to create the Vue app with `type="module"` attribute.
 
 ```javascript
 import {createApp} from 'vue';
@@ -95,9 +109,13 @@ app.mount('#app');
 
 ### npm & Vue
 
+Install the library from npm.
+
 ```bash
 npm install v3-d-table
 ```
+
+Use the component in your Vue app.
 
 ```html
 <script setup>
