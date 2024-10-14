@@ -1,7 +1,7 @@
 <script setup>
 import {defineEmits, defineProps} from 'vue';
-import v3DTableTd from './v3-d-table-td.vue';
-import v3DTableActions from './v3-d-table-actions.vue';
+import V3DTableTd from './v3-d-table-td.vue';
+import V3DTableActions from './v3-d-table-actions.vue';
 
 const emit = defineEmits([
   'click', 'dblclick', 'mouseenter', 'mouseleave', 'check',

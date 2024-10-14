@@ -1,5 +1,5 @@
 <script setup>
-import v3DTable from './components/v3-d-table.vue'
+import V3DTable from './components/v3-d-table.vue'
 
 let genderOpts = [
   {value: 'male', label: 'Male'},

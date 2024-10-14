@@ -1,9 +1,9 @@
 <script setup>
 import {defineEmits, defineProps, defineExpose, markRaw, ref, computed, watch, onMounted} from 'vue';
-import v3DTableTr from './v3-d-table-tr.vue';
-import v3DTableActions from './v3-d-table-actions.vue';
-import v3DTableFilterText from './v3-d-table-filter-text.vue';
-import v3DTableFilterSelect from './v3-d-table-filter-select.vue';
+import V3DTableTr from './v3-d-table-tr.vue';
+import V3DTableActions from './v3-d-table-actions.vue';
+import V3DTableFilterText from './v3-d-table-filter-text.vue';
+import V3DTableFilterSelect from './v3-d-table-filter-select.vue';
 
 const emit = defineEmits([
   'row-click', 'row-dblclick', 'row-mouseenter', 'row-mouseleave',
@@ -246,8 +246,8 @@ watch(
       const rebuildFilterConfig = function (col) {
         let filter = col['filter'];
         const buildInFilters = {
-          'select': {type: markRaw(v3DTableFilterSelect), op: '='},
-          'text': {type: markRaw(v3DTableFilterText), op: 'like'},
+          'select': {type: markRaw(V3DTableFilterSelect), op: '='},
+          'text': {type: markRaw(V3DTableFilterText), op: 'like'},
           'date': {type: 'v3-d-table-filter-date-range', op: 'date'}
         };
         if (buildInFilters[filter['type']]) {

@@ -13,6 +13,45 @@ A data table component for Vue 3.x.
 - [x] Scrollable by vertical and horizontal
 - [x] Child items supported
 
+## Usage
+
+### Independent script
+
+```html
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-d-table-default.min.css"/>
+<script src="https://unpkg.com/vue@3.x"></script>
+<script src="https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-table.umd.js"></script>
+```
+
+```html
+<div id="app">
+    <v3-d-table :columns="columns" :data="data" height="calc(100vh - 100px)"></v3-d-table>
+</div>
+```
+
+```javascript
+const { createApp } = Vue;
+const { V3DTable } = V3DTable;
+
+const app = createApp({
+    data: () => {
+        return {
+            columns: [
+                { code: 'name', title: 'Name', field: 'name' },
+                { code: 'age', title: 'Age', field: 'age' }
+            ],
+            data: [
+                { name: 'Alice', age: 20 },
+                { name: 'Bob', age: 21 }
+            ]
+        };
+    }
+});
+
+app.component('v3-d-table', V3DTable);
+app.mount('#app');
+```
+
 ## Configuration
 
 ### Table Options

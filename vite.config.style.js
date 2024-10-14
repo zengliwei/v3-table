@@ -7,12 +7,12 @@ export default defineConfig({
         cssCodeSplit: true,
         lib: {
             name: 'v3-d-table',
-            entry: `src/assets/v3-d-table-default.css`,
+            entry: `src/assets/v3-d-table-theme.css`,
             fileName: () => 'lib/v3-d-table.[format].js'
         },
         rollupOptions: {
             output: {
-                assetFileNames: 'lib/v3-d-table-default.min.css'
+                assetFileNames: 'lib/v3-d-table-theme.min.css'
             }
         }
     }
