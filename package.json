@@ -27,7 +27,9 @@
     },
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
+        "build:lib": "vite build --config vite.config.lib.js",
+        "build:style": "vite build --config vite.config.style.js",
+        "build": "npm run build:style && npm run build:lib",
         "preview": "vite preview"
     }
 }

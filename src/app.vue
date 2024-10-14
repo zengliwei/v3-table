@@ -6,12 +6,6 @@ let genderOpts = [
   {value: 'female', label: 'Female'}
 ];
 
-let customFilterTypes = {
-  select: {
-    props: {}
-  }
-};
-
 let columns = [
   {type: 'checkbox'},
   {type: 'index'},
@@ -45,6 +39,12 @@ let columns = [
     ]
   }
 ];
+
+let customFilterTypes = {
+  select: {
+    props: {}
+  }
+};
 
 const toolbarActions = [
   {label: 'Add', handle: (activatedRows) => console.log('Add', activatedRows)},
