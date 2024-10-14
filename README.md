@@ -2,6 +2,10 @@
 
 A data table component for Vue 3.x.
 
+Github: [https://github.com/zengliwei/v3-table](https://github.com/zengliwei/v3-table)
+
+Demo: http://zengliwei.local.test/works/v3-d-table/
+
 ![alt v3-d-table](https://zengliwei.github.io/web/images/works/v3-d-table/screenshot.png)
 
 ## Features
