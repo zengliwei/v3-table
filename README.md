@@ -29,7 +29,7 @@ Request the theme CSS and script files from CDN.
 ```html
 <link rel="stylesheet" type="text/css" href="https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-d-table-theme.min.css"/>
 <script src="https://unpkg.com/vue@3.5.12/dist/vue.global.prod.js"></script>
-<script src="https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-table.umd.js"></script>
+<script src="https://unpkg.com/v3-d-table@0.0.2/dist/lib/v3-d-table.umd.js"></script>
 ```
 
 Use a div element with an id to mount the app.
