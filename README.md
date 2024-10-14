@@ -7,7 +7,7 @@ A data table component for Vue 3.x.
 - [x] i18n support
 - [x] Custom toolbar
 - [x] Checkbox column supported
-- [x] Fixed columns supported
+- [x] Fixed columns, left & right supported
 - [x] Column filter supported
 - [x] Custom column template/renderer supported
 - [x] Scrollable by vertical and horizontal
