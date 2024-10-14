@@ -2,6 +2,8 @@
 
 A data table component for Vue 3.x.
 
+![alt v3-d-table](https://zengliwei.github.io/web/images/works/v3-d-table/screenshot.png)
+
 ## Features
 
 - [x] i18n support
