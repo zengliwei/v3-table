@@ -33,12 +33,13 @@ const props = defineProps({
   },
 
   customFilterTypes: {
-    type: Object
+    type: Object,
+    default: () => []
   },
 
   data: {
     type: Array,
-    default: []
+    default: () => []
   },
 
   srcUrl: {
@@ -52,12 +53,12 @@ const props = defineProps({
 
   srcHeaders: {
     type: Object,
-    default: {Accept: 'application/json'}
+    default: () => ({Accept: 'application/json'})
   },
 
   srcParams: {
     type: Array,
-    default: []
+    default: () => []
   },
 
   srcHandler: {
@@ -80,12 +81,17 @@ const props = defineProps({
 
   pageSizes: {
     type: Array,
-    default: [20, 50, 100, 200]
+    default: () => [20, 50, 100, 200]
   },
 
   page: {
     type: Number,
     default: 1
+  },
+
+  emptyValue: {
+    type: Function,
+    default: () => '-'
   },
 
   i18nCheckedStatus: {
@@ -101,11 +107,6 @@ const props = defineProps({
   i18nNoData: {
     type: String,
     default: 'No matched data'
-  },
-
-  emptyValue: {
-    type: String,
-    default: '-'
   },
 
   i18nPrevPage: {
@@ -246,14 +247,16 @@ watch(
 
       const rebuildFilterConfig = function (col) {
         let filter = col['filter'];
-        const buildInFilters = {
+        const filterTypes = {
           'select': {type: markRaw(V3DTableFilterSelect), op: '='},
-          'text': {type: markRaw(V3DTableFilterText), op: 'like'},
-          'date': {type: 'v3-d-table-filter-date-range', op: 'date'}
+          'text': {type: markRaw(V3DTableFilterText), op: 'like'}
         };
-        if (buildInFilters[filter['type']]) {
-          !filter['op'] && (filter['op'] = buildInFilters[filter['type']]['op']);
-          filter['type'] = buildInFilters[filter['type']]['type'];
+        Object.keys(props.customFilterTypes).forEach((key) => {
+          filterTypes[key] = props.customFilterTypes[key];
+        });
+        if (filterTypes[filter['type']]) {
+          !filter['op'] && (filter['op'] = filterTypes[filter['type']]['op']);
+          filter['type'] = filterTypes[filter['type']]['type'];
         }
         filter['f'] = col['field'] || col['code'];
         filter['v'] = ref();
@@ -560,7 +563,7 @@ onMounted(() => {
         <table>
           <thead>
           <tr>
-            <template v-for="(col, c) in cols">
+            <template v-for="col in cols">
               <th v-if="col['type'] === 'checkbox'" class="checkbox" :style="col['style']">
                 <div>
                   <input ref="elCheckAll" type="checkbox"
@@ -583,7 +586,7 @@ onMounted(() => {
             <th v-if="showAutoWidthCol" class="auto"></th>
           </tr>
           <tr v-if="showColumnFilter">
-            <template v-for="(col, c) in cols">
+            <template v-for="col in cols">
               <th v-if="col['type'] === 'checkbox'" class="checkbox" :style="col['style']"></th>
               <th v-if="col['type'] === 'index'" class="index" :style="col['style']"></th>
               <th v-if="col['type'] === 'actions'" class="actions" :style="col['style']"></th>
@@ -591,7 +594,7 @@ onMounted(() => {
                 <component
                     v-if="col['filter']"
                     :is="col['filter']['type']"
-                    :props="col['filter']['params']"
+                    v-bind="col['filter']['params']"
                     v-model:value="col['filter']['v']"
                     @execute="filter"></component>
               </th>

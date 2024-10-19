@@ -1,5 +1,6 @@
 <script setup>
 import V3DTable from './components/v3-d-table.vue'
+import V3DTableFilterSelect from "./components/v3-d-table-filter-select.vue";
 
 let genderOpts = [
   {value: 'male', label: 'Male'},
@@ -41,9 +42,6 @@ let columns = [
 ];
 
 let customFilterTypes = {
-  select: {
-    props: {}
-  }
 };
 
 const toolbarActions = [

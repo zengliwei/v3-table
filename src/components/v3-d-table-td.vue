@@ -14,19 +14,14 @@ const props = defineProps({
     required: true
   },
 
-  lastLeftFixedColIdx: {
-    type: Number,
-    default: -1
-  },
-
   level: {
     type: Number,
     default: 0
   },
 
   emptyValue: {
-    type: String,
-    default: '-'
+    type: Function,
+    default: () => '-'
   }
 });
 

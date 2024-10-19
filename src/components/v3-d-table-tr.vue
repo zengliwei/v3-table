@@ -29,8 +29,8 @@ const props = defineProps({
   },
 
   emptyValue: {
-    type: String,
-    default: '-'
+    type: Function,
+    default: () => '-'
   },
 
   lastLeftFixedColIdx: {
