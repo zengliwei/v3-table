@@ -397,8 +397,25 @@ const updateRows = function (result) {
 };
 
 const refreshByRemote = function () {
+  let columns = [];
+  cols.value.forEach((col) => {
+    if (col['type'] === 'data' && col['field']) {
+      columns.push(col['field']);
+    }
+  });
+
+  let filters = [];
+  columnFilters.concat(customFilters, props.srcParams).forEach((filter) => {
+    if (!filter.v || !filter.v.value) return;
+    filters.push({
+      f: filter['f'],
+      op: filter['op'],
+      v: filter['v'].value
+    });
+  });
+
   if (props.srcHandler instanceof Function) {
-    props.srcHandler(updateRows, props);
+    props.srcHandler(updateRows, columns, filters);
   } else {
     const switchParams = (params, prefix = null) => {
       let q = [];
@@ -418,24 +435,7 @@ const refreshByRemote = function () {
 
     const stringifyParams = (params, prefix = '') => {
       return switchParams(params, prefix).join('&');
-    }
-
-    let columns = [];
-    cols.value.forEach((col) => {
-      if (col['type'] === 'data' && col['field']) {
-        columns.push(col['field']);
-      }
-    });
-
-    let filters = [];
-    columnFilters.concat(customFilters, props.srcParams).forEach((filter) => {
-      if (!filter.v || !filter.v.value) return;
-      filters.push({
-        f: filter['f'],
-        op: filter['op'],
-        v: filter['v'].value
-      });
-    });
+    };
 
     let xhr = new XMLHttpRequest(), url = props.srcUrl, body = '';
     if (props.srcMethod.toUpperCase() === 'GET') {
