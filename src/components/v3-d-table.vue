@@ -56,7 +56,8 @@ const props = defineProps({
   },
 
   srcParams: {
-    type: Array
+    type: Array,
+    default: []
   },
 
   srcHandler: {
@@ -399,13 +400,52 @@ const refreshByRemote = function () {
   if (props.srcHandler instanceof Function) {
     props.srcHandler(updateRows, props);
   } else {
+    const switchParams = (params, prefix = null) => {
+      let q = [];
+      if (params instanceof Array) {
+        params.forEach((v, k) => {
+          q = q.concat(switchParams(v, `${prefix}[${k}]`));
+        });
+      } else if (params instanceof Object) {
+        Object.keys(params).forEach(k => {
+          q = q.concat(switchParams(params[k], prefix ? `${prefix}[${k}]` : k));
+        });
+      } else if (params !== undefined && params !== null) {
+        q = [`${prefix}=${encodeURIComponent(params)}`];
+      }
+      return q;
+    };
+
+    const stringifyParams = (params, prefix = '') => {
+      return switchParams(params, prefix).join('&');
+    }
+
+    let columns = [];
+    cols.value.forEach((col) => {
+      if (col['type'] === 'data' && col['field']) {
+        columns.push(col['field']);
+      }
+    });
+
+    let filters = [];
+    columnFilters.concat(customFilters, props.srcParams).forEach((filter) => {
+      if (!filter.v || !filter.v.value) return;
+      filters.push({
+        f: filter['f'],
+        op: filter['op'],
+        v: filter['v'].value
+      });
+    });
+
     let xhr = new XMLHttpRequest(), url = props.srcUrl, body = '';
     if (props.srcMethod.toUpperCase() === 'GET') {
       url = props.srcUrl.indexOf('?') === -1
           ? `${props.srcUrl}?p=${page.value}&ps=${pageSize.value}`
           : `${props.srcUrl}&p=${page.value}&ps=${pageSize.value}`;
+      url += '&' + stringifyParams({c: columns, f: filters});
     } else {
-      body = `p=${page.value}&ps=${pageSize.value}`;
+      body = `p=${page.value}&ps=${pageSize.value}&`
+          + stringifyParams({c: columns, f: filters});
     }
     xhr.open(props.srcMethod, url);
     for (let key in props.srcHeaders) {
