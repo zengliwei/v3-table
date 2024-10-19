@@ -27,9 +27,9 @@ Three ways are supported to use the component, here are the examples.
 Request the theme CSS and script files from CDN.
 
 ```html
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/v3-d-table@0.0.3/dist/lib/v3-d-table-theme.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/v3-d-table@0.0.4/dist/lib/v3-d-table-theme.min.css"/>
 <script src="https://unpkg.com/vue@3.5.12/dist/vue.global.prod.js"></script>
-<script src="https://unpkg.com/v3-d-table@0.0.3/dist/lib/v3-d-table.umd.js"></script>
+<script src="https://unpkg.com/v3-d-table@0.0.4/dist/lib/v3-d-table.umd.js"></script>
 ```
 
 Use a div element with an id to mount the app.
@@ -68,11 +68,11 @@ app.mount('#app');
 Request the theme CSS file and import the libraries from CDN.
 
 ```html
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/v3-d-table@0.0.3/dist/lib/v3-d-table-theme.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/v3-d-table@0.0.4/dist/lib/v3-d-table-theme.min.css"/>
 <script type="importmap">
     {"imports": {
         "vue": "https://unpkg.com/vue@3.5.12/dist/vue.esm-browser.prod.js",
-        "v3-d-table": "https://unpkg.com/v3-d-table@0.0.3/dist/lib/v3-d-table.es.js"
+        "v3-d-table": "https://unpkg.com/v3-d-table@0.0.4/dist/lib/v3-d-table.es.js"
     }}
 </script>
 ```
@@ -122,6 +122,8 @@ Use the component in your Vue app.
 ```html
 <script setup>
 import V3DTable from 'v3-d-table';
+import 'v3-d-table/v3-d-table.css';
+//import 'v3-d-table/v3-d-table-theme.css';
 
 const columns = [
     {code: 'name', title: 'Name', field: 'name'},

@@ -8,18 +8,14 @@ export default defineConfig({
         emptyOutDir: false,
         lib: {
             name: 'v3-d-table',
-            entry: `src/v3-d-table.js`,
+            entry: `src/components/v3-d-table.vue`,
             fileName: () => 'lib/v3-d-table.[format].js'
         },
         rollupOptions: {
-            external: [
-                'vue'
-            ],
+            external: ['vue'],
             output: {
                 inlineDynamicImports: false,
-                globals: {
-                    vue: 'Vue'
-                },
+                globals: {vue: 'Vue'},
                 assetFileNames: (info) => {
                     if (info.name.length - info.name.lastIndexOf('.css') === 4) {
                         return `lib/${info.name.substring(0, info.name.length - 4)}.min.css`;
