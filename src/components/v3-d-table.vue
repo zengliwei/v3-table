@@ -324,7 +324,7 @@ const getAllRows = function (rows) {
 const updateCheckAllStatus = function () {
   let allChecked = true, hasChecked = false;
   getAllRows(rows.value).forEach((r) => {
-    if (!r['_checked_']) {
+    if (!r['_activated_']) {
       allChecked = false;
     } else {
       hasChecked = true;
@@ -336,21 +336,21 @@ const updateCheckAllStatus = function () {
 
 const checkAll = function (status) {
   getAllRows(rows.value).forEach((row) => {
-    row['_checked_'] = status;
-    status ? activatedRows.value.push(row)
+    row['_activated_'] = status;
+    status ? (activatedRows.value.indexOf(row) < 0 && activatedRows.value.push(row))
         : activatedRows.value.splice(activatedRows.value.indexOf(row), 1);
   });
 };
 
 const checkRow = function (row, status) {
-  row['_checked_'] = status;
-  status ? activatedRows.value.push(row)
+  row['_activated_'] = status;
+  status ? (activatedRows.value.indexOf(row) < 0 && activatedRows.value.push(row))
       : activatedRows.value.splice(activatedRows.value.indexOf(row), 1);
   updateCheckAllStatus();
 };
 
 const clickRow = function (row) {
-  checkRow(row, !row['_checked_']);
+  checkRow(row, !row['_activated_']);
   emit('row-click', row);
 };
 
@@ -492,7 +492,7 @@ if (props.autoLoad) {
 onMounted(() => {
   if (props.height) {
     elMain.value.style.height = `calc(100% - ${elFooter.value.offsetHeight}px)`;
-    elHeader.value.style.top = `${elToolbar.value.offsetHeight}px`;
+    elHeader.value.style.top = elToolbar.value ? `${elToolbar.value.offsetHeight}px` : 0;
   }
 });
 </script>
@@ -575,11 +575,11 @@ onMounted(() => {
                   :empty-value="emptyValue"
                   :last-left-fixed-col-idx="lastLeftFixedColIdx"
                   :activated-rows="activatedRows"
+                  @check="(obj, status) => checkRow(obj, status)"
                   @click="(obj) => clickRow(obj)"
                   @dblclick="(obj) => $emit('row-dblclick', obj)"
                   @mouseenter="(obj) => $emit('row-mouseenter', obj)"
                   @mouseleave="(obj) => $emit('row-mouseleave', obj)"
-                  @check="(obj, status) => checkRow(obj, status)"
                   @cell-click="(obj, col) => $emit('cell-click', obj, col)"
                   @cell-dblclick="(obj, col) => $emit('cell-dblclick', obj, col)"
                   @cell-mouseenter="(obj, col) => $emit('cell-mouseenter', obj, col)"
@@ -588,8 +588,7 @@ onMounted(() => {
           </template>
           <template v-else>
             <tr>
-              <td :colspan="cols.length"
-                  class="no-data">
+              <td :colspan="cols.length + 1" class="no-data">
                 <div v-text="i18nNoData"></div>
               </td>
             </tr>
@@ -917,6 +916,7 @@ onMounted(() => {
 
 .v3-d-table .v3-d-table-footer .paginator a {
   color: var(--v3-d-table-paginator-link-color);
+  white-space: nowrap;
 }
 
 .v3-d-table .v3-d-table-footer .paginator a.disabled {

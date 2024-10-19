@@ -4,7 +4,7 @@ import V3DTableTd from './v3-d-table-td.vue';
 import V3DTableActions from './v3-d-table-actions.vue';
 
 const emit = defineEmits([
-  'click', 'dblclick', 'mouseenter', 'mouseleave', 'check',
+  'check', 'click', 'dblclick', 'mouseenter', 'mouseleave',
   'cell-click', 'cell-dblclick', 'cell-mouseenter', 'cell-mouseleave'
 ]);
 
@@ -66,14 +66,13 @@ const rebuildActions = function (actions, row) {
 </script>
 
 <template>
-  <tr ref="tr" :class="{activated: activatedRows.indexOf(row) > -1, hidden: row['_hidden_']}"
+  <tr ref="tr" :class="{activated: row['_activated_'], hidden: row['_hidden_']}"
       @click="$emit('click', row)"
       @dblclick="$emit('dblclick', row)">
     <template v-for="(col, c) in cols">
       <td v-if="col['type'] === 'checkbox'" class="checkbox" :style="col['style']">
         <div>
-          <input type="checkbox"
-                 :checked="row['_checked_']"
+          <input type="checkbox" :checked="row['_activated_']"
                  @click.stop
                  @change="(evt) => check(evt.currentTarget.checked)"/>
         </div>
@@ -111,11 +110,11 @@ const rebuildActions = function (actions, row) {
         :last-left-fixed-col-idx="lastLeftFixedColIdx"
         :activated-rows="activatedRows"
         :level="level + 1"
+        @check="(obj, status) => $emit('check', obj, status)"
         @click="(obj) => $emit('click', obj)"
         @dblclick="(obj) => $emit('dblclick', obj)"
         @mouseenter="(obj) => $emit('mouseenter', obj)"
         @mouseleave="(obj) => $emit('mouseleave', obj)"
-        @check="(obj, status) => $emit('check', obj, status)"
         @cell-click="(obj, col) => $emit('cell-click', obj, col)"
         @cell-dblclick="(obj, col) => $emit('cell-dblclick', obj, col)"
         @cell-mouseenter="(obj, col) => $emit('cell-mouseenter', obj, col)"
